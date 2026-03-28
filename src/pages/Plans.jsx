@@ -1,0 +1,123 @@
+import { useNavigate } from "react-router-dom";
+import { useSubscription, PLANS } from "../context/SubscriptionContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+
+export default function Plans() {
+  const { subscription, subscribe, cancelSubscription, activePlan } =
+    useSubscription();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubscribe = (planId) => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    subscribe(planId);
+    navigate("/weekly");
+  };
+
+  return (
+    <div className="plans-page">
+      <div className="plans-header">
+        <h1>Choose Your Plan</h1>
+        <p>
+          Unlimited access to 19+ world cuisines. Every meal just{" "}
+          <strong>$9.99</strong> — delivery included, taxes extra.
+        </p>
+      </div>
+
+      <div className="plans-grid">
+        {PLANS.map((plan) => {
+          const isActive = activePlan?.id === plan.id;
+          return (
+            <div
+              key={plan.id}
+              className={`plan-card ${plan.popular ? "popular" : ""} ${
+                isActive ? "active" : ""
+              }`}
+            >
+              {plan.popular && (
+                <div className="popular-badge">Best Value</div>
+              )}
+              {isActive && <div className="active-badge">Current Plan</div>}
+              <div
+                className="plan-accent"
+                style={{ background: plan.color }}
+              />
+              <div className="plan-body">
+                <h2>{plan.name}</h2>
+                <div className="plan-price">
+                  <span className="price-amount">${plan.price}</span>
+                  <span className="price-period">/month</span>
+                </div>
+                <p className="plan-desc">{plan.description}</p>
+                <div className="plan-meal-price">
+                  <span>Each meal: </span>
+                  <strong>${plan.mealPrice}/meal</strong>
+                </div>
+                <ul className="plan-features">
+                  {plan.features.map((f) => (
+                    <li key={f}>
+                      <span className="check">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                {isActive ? (
+                  <button
+                    className="btn btn-outline btn-block"
+                    onClick={cancelSubscription}
+                  >
+                    Cancel Plan
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary btn-block"
+                    style={{ background: plan.color }}
+                    onClick={() => handleSubscribe(plan.id)}
+                  >
+                    {subscription ? "Switch Plan" : "Get Started"}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="plans-faq">
+        <h2>How Pricing Works</h2>
+        <div className="faq-grid">
+          <div className="faq-item">
+            <h3>Monthly Subscription</h3>
+            <p>
+              Pay $99.99/mo for lunch only or dinner only. Pay $199.99/mo for
+              both lunch & dinner. This unlocks the discounted $9.99/meal rate.
+            </p>
+          </div>
+          <div className="faq-item">
+            <h3>Per-Meal Cost</h3>
+            <p>
+              Each complete meal (2 appetizers + main course + side dish) costs
+              $9.99. This includes delivery. State taxes are applied at checkout.
+            </p>
+          </div>
+          <div className="faq-item">
+            <h3>Flexible Ordering</h3>
+            <p>
+              Order for just one day, an entire week, or the full month. You
+              must order at least 24 hours before meal time.
+            </p>
+          </div>
+          <div className="faq-item">
+            <h3>Delivery</h3>
+            <p>
+              Food is delivered anytime within 24 hours of your scheduled meal
+              time. Delivery cost is included in the $9.99/meal price.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

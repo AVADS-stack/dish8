@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx vite:*)",
+      "Bash(node -e \":*)",
+      "Bash(grep -c '\"\"appetizer\"\"' /storage2/aveerappa/website/src/data/cuisines.js)",
+      "Bash(grep -c '\"\"main\"\"' /storage2/aveerappa/website/src/data/cuisines.js)",
+      "Bash(grep -c '\"\"side\"\"' /storage2/aveerappa/website/src/data/cuisines.js)",
+      "Bash(grep -n \"aria-label\\\\|aria-\" /storage2/aveerappa/website/src/components/*.jsx)",
+      "Bash(npx eslint:*)",
+      "Bash(grep -n \"type=\"\"submit\"\"\\\\|type=\"\"button\"\"\" /storage2/aveerappa/website/src/pages/*.jsx)",
+      "Bash(grep -n \"class=\"\".*card\\\\|class=\"\".*button\\\\|class=\"\".*btn\" /storage2/aveerappa/website/src/pages/*.jsx)"
+    ]
+  }
+}
