@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -15,10 +15,11 @@ export default function Auth() {
     address: "",
   });
 
-  if (user) {
-    navigate("/account");
-    return null;
-  }
+  useEffect(() => {
+    if (user) navigate("/account");
+  }, [user, navigate]);
+
+  if (user) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -110,12 +111,12 @@ export default function Auth() {
           {mode === "login" ? (
             <>
               New to Dish8?{" "}
-              <button onClick={() => setMode("signup")}>Sign Up</button>
+              <button type="button" onClick={() => setMode("signup")}>Sign Up</button>
             </>
           ) : (
             <>
               Already have an account?{" "}
-              <button onClick={() => setMode("login")}>Sign In</button>
+              <button type="button" onClick={() => setMode("login")}>Sign In</button>
             </>
           )}
         </p>

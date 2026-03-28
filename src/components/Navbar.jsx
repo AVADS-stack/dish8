@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import SearchBar from "./SearchBar.jsx";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -21,8 +22,11 @@ export default function Navbar() {
           <span className="brand-text">Dish<span className="brand-8">8</span></span>
         </Link>
 
+        <SearchBar />
+
         <button
           className="nav-toggle"
+          type="button"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
@@ -43,16 +47,17 @@ export default function Navbar() {
               "Subscribe"
             )}
           </Link>
-          <Link to="/cart" className="cart-link" onClick={() => setMenuOpen(false)}>
+          <Link to="/cart" className="cart-link" onClick={() => setMenuOpen(false)} aria-label={`Cart with ${totalItems} items`}>
             🛒
-            {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
+            {totalItems > 0 && <span className="cart-count" aria-hidden="true">{totalItems}</span>}
           </Link>
           {user ? (
             <div className="user-menu">
-              <Link to="/account" onClick={() => setMenuOpen(false)}>
+              <Link to="/account" onClick={() => setMenuOpen(false)} aria-label="My account">
                 <span className="avatar">{user.name[0]}</span>
               </Link>
               <button
+                type="button"
                 className="btn-logout"
                 onClick={() => {
                   logout();

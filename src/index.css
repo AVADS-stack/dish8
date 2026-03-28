@@ -608,9 +608,7 @@ button {
   gap: 1rem;
 }
 
-.cuisine-hero-emoji {
-  font-size: 3rem;
-}
+/* (removed .cuisine-hero-emoji — no longer used) */
 
 .cuisine-title-row h1 {
   font-size: 2rem;
@@ -1862,6 +1860,104 @@ button {
   color: rgba(255, 255, 255, 0.15);
 }
 
+/* ── Cuisine Dish Count Badge ───────────────────────────────── */
+.cuisine-dish-count {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--text-bright);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Search Bar ─────────────────────────────────────────────── */
+.search-bar {
+  position: relative;
+  flex: 0 1 320px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-bright);
+  font-size: 0.85rem;
+  font-family: var(--font);
+  transition: all var(--transition);
+}
+.search-bar input::placeholder {
+  color: var(--text-muted);
+}
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  max-height: 360px;
+  overflow-y: auto;
+  z-index: 1001;
+  box-shadow: var(--shadow-lg);
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background var(--transition);
+  cursor: pointer;
+}
+.search-result-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.result-type {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(229, 9, 20, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: center;
+}
+
+.result-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-bright);
+  flex: 1;
+}
+
+.result-cuisine {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 /* ── Brand accent ───────────────────────────────────────────── */
 .brand-8 {
   color: var(--accent);
@@ -1903,6 +1999,10 @@ button {
 
 @media (max-width: 768px) {
   /* Navbar mobile */
+  .search-bar {
+    display: none;
+  }
+
   .nav-toggle {
     display: flex;
   }
@@ -2073,4 +2173,116 @@ button {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Focus Styles (Accessibility) ───────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.3);
+}
+
+.day-tab:focus-visible,
+.meal-tab:focus-visible,
+.filter-btn:focus-visible,
+.cuisine-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.cuisine-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  transform: scale(1.06);
+  box-shadow: var(--shadow-lg);
+}
+
+.dish-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.slider-arrow:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--accent);
+}
+
+.btn-cart-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.auth-form input:focus-visible,
+.auth-form textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
+}
+
+/* ── Reduced Motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 404 / Error Page ───────────────────────────────────────── */
+.error-page {
+  text-align: center;
+  padding: 6rem 1.5rem;
+}
+
+.error-icon {
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.error-page h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  margin-bottom: 0.75rem;
+}
+
+.error-page p {
+  color: var(--text-muted);
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Legal Page Responsive ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .legal-card {
+    padding: 1.5rem;
+  }
+  .legal-card h1 {
+    font-size: 1.5rem;
+  }
+  .legal-card h2 {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-card {
+    padding: 1rem;
+  }
 }

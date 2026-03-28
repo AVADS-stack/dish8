@@ -11,7 +11,7 @@ export default function WeeklyMenu() {
   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
   const [selectedMealTime, setSelectedMealTime] = useState("lunch");
   const [selectedCuisine, setSelectedCuisine] = useState("italian");
-  const { getMeal, isMealComplete } = useCart();
+  const { isMealComplete } = useCart();
 
   const mealTimes = activePlan ? activePlan.meals : ["lunch", "dinner"];
   const cuisine = cuisines[selectedCuisine];

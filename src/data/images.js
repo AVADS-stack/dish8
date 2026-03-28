@@ -1,365 +1,772 @@
 /**
  * Dish8 — Image utilities
  *
- * Provides cuisine hero images and per-dish image URLs.
- *
- * Strategy:
- *   1. Cuisine hero/card images use hand-picked Unsplash photo URLs (free,
- *      no API key, hotlinking explicitly allowed by Unsplash).
- *   2. Individual dish images use Unsplash Source-style URLs with search
- *      keywords. As a fallback, LoremFlickr provides keyword-based food
- *      images with no authentication.
- *
- * All URLs are publicly accessible and require no API keys.
- *
- * Sources:
- *   - Unsplash (unsplash.com) — free license, hotlinking encouraged
- *   - LoremFlickr (loremflickr.com) — Creative Commons, no auth
- *   - Foodish API (foodish-api.com) — free, no auth, limited categories
+ * Cuisine cards: hand-picked Unsplash food photos.
+ * Dish images: 648 real food photos (TheMealDB + Foodish), all unique.
+ * Remaining 57 dishes: unique SVG gradient fallbacks.
  */
 
 // ---------------------------------------------------------------------------
-// 1. Cuisine hero / card images
-//    Each URL points to a specific, high-quality Unsplash photo.
-//    Format: https://images.unsplash.com/photo-{id}?w=800&h=500&fit=crop
-//    The w/h/fit params let Unsplash CDN resize on the fly.
+// 1. Cuisine hero/card images — verified Unsplash food photos
 // ---------------------------------------------------------------------------
-
 export const CUISINE_IMAGES = {
-  italian:
-    // Neapolitan pizza — classic Italian cuisine shot
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&fit=crop&q=80",
-
-  chinese:
-    // Dim sum dumplings in bamboo steamer
-    "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&h=500&fit=crop&q=80",
-
-  japanese:
-    // Sushi platter — vibrant nigiri and maki
-    "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&h=500&fit=crop&q=80",
-
-  indian:
-    // Colorful Indian curry spread with naan
-    "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&h=500&fit=crop&q=80",
-
-  mexican:
-    // Loaded tacos with fresh toppings
-    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&h=500&fit=crop&q=80",
-
-  thai:
-    // Thai green curry in bowl
-    "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?w=800&h=500&fit=crop&q=80",
-
-  french:
-    // Elegant French pastries and croissants
-    "https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=800&h=500&fit=crop&q=80",
-
-  korean:
-    // Korean bibimbap in stone bowl
-    "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=800&h=500&fit=crop&q=80",
-
-  vietnamese:
-    // Pho noodle soup — aromatic broth with herbs
-    "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800&h=500&fit=crop&q=80",
-
-  greek:
-    // Greek salad with feta, olives, tomatoes
-    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&h=500&fit=crop&q=80",
-
-  spanish:
-    // Paella — colorful seafood rice
-    "https://images.unsplash.com/photo-1515443961218-a51367888e4b?w=800&h=500&fit=crop&q=80",
-
-  lebanese:
-    // Falafel plate with hummus and salad
-    "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&h=500&fit=crop&q=80",
-
-  ethiopian:
-    // Ethiopian injera with colorful stews
-    "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&h=500&fit=crop&q=80",
-
-  turkish:
-    // Turkish kebab platter
-    "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&h=500&fit=crop&q=80",
-
-  moroccan:
-    // Moroccan tagine — traditional clay pot
-    "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=800&h=500&fit=crop&q=80",
-
-  brazilian:
-    // Brazilian churrasco / grilled meats
-    "https://images.unsplash.com/photo-1558030006-450675393462?w=800&h=500&fit=crop&q=80",
-
-  peruvian:
-    // Ceviche — fresh seafood with lime
-    "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&h=500&fit=crop&q=80",
-
-  caribbean:
-    // Colorful Caribbean jerk chicken plate
-    "https://images.unsplash.com/photo-1532465614-6cc8d45f647f?w=800&h=500&fit=crop&q=80",
-
-  german:
-    // Bratwurst with pretzel and mustard
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80",
+  italian:   "https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=800&h=500&fit=crop&q=80",
+  chinese:   "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&h=500&fit=crop&q=80",
+  japanese:  "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&h=500&fit=crop&q=80",
+  indian:    "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&h=500&fit=crop&q=80",
+  mexican:   "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&h=500&fit=crop&q=80",
+  thai:      "https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?w=800&h=500&fit=crop&q=80",
+  french:    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=500&fit=crop&q=80",
+  korean:    "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=800&h=500&fit=crop&q=80",
+  vietnamese:"https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800&h=500&fit=crop&q=80",
+  greek:     "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&h=500&fit=crop&q=80",
+  spanish:   "https://images.unsplash.com/photo-1515443961218-a51367888e4b?w=800&h=500&fit=crop&q=80",
+  lebanese:  "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&h=500&fit=crop&q=80",
+  ethiopian: "https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&h=500&fit=crop&q=80",
+  turkish:   "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&h=500&fit=crop&q=80",
+  moroccan:  "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=800&h=500&fit=crop&q=80",
+  brazilian: "https://images.unsplash.com/photo-1558030006-450675393462?w=800&h=500&fit=crop&q=80",
+  peruvian:  "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&h=500&fit=crop&q=80",
+  caribbean: "https://images.unsplash.com/photo-1532465614-6cc8d45f647f?w=800&h=500&fit=crop&q=80",
+  german:    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80",
 };
 
 // ---------------------------------------------------------------------------
-// 2. Cuisine-aware keyword map
-//    Maps cuisine IDs to relevant search keywords that produce good results
-//    when used with image search services.
+// 2. Pre-computed dish image map — 648 real food photos, all unique
+//    Key: "cuisineId|dishname" (lowercase)
+//    Value: direct image URL (TheMealDB or Foodish)
 // ---------------------------------------------------------------------------
-
-const CUISINE_KEYWORDS = {
-  italian: "italian",
-  chinese: "chinese",
-  japanese: "japanese",
-  indian: "indian curry",
-  mexican: "mexican",
-  thai: "thai",
-  french: "french cuisine",
-  korean: "korean",
-  vietnamese: "vietnamese",
-  greek: "greek mediterranean",
-  spanish: "spanish",
-  lebanese: "lebanese middle eastern",
-  ethiopian: "ethiopian",
-  turkish: "turkish",
-  moroccan: "moroccan",
-  brazilian: "brazilian",
-  peruvian: "peruvian",
-  caribbean: "caribbean jamaican",
-  german: "german",
+const DISH_IMAGE_MAP = {
+  "italian|prosciutto e melone": "https://www.themealdb.com/images/media/meals/qqpwsy1511796276.jpg",
+  "italian|calamari fritti": "https://www.themealdb.com/images/media/meals/yhi46r1763330279.jpg",
+  "italian|spaghetti alla carbonara": "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg",
+  "italian|lasagna bolognese": "https://www.themealdb.com/images/media/meals/sutysw1468247559.jpg",
+  "italian|ossobuco alla milanese": "https://www.themealdb.com/images/media/meals/wwuqvt1487345467.jpg",
+  "italian|risotto ai funghi porcini": "https://www.themealdb.com/images/media/meals/xxrxux1503070723.jpg",
+  "italian|penne all'arrabbiata": "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
+  "italian|fettuccine alfredo": "https://www.themealdb.com/images/media/meals/0jv5gx1661040802.jpg",
+  "italian|pollo alla parmigiana": "https://www.themealdb.com/images/media/meals/li30ck1763281992.jpg",
+  "italian|linguine alle vongole": "https://www.themealdb.com/images/media/meals/usywpp1511189717.jpg",
+  "italian|ravioli di ricotta e spinaci": "https://www.themealdb.com/images/media/meals/ytme8t1764111401.jpg",
+  "italian|spaghetti alle cozze": "https://www.themealdb.com/images/media/meals/vpcqn01763335688.jpg",
+  "chinese|xiao long bao": "https://www.themealdb.com/images/media/meals/i0610h1765659464.jpg",
+  "chinese|kung pao ji ding": "https://www.themealdb.com/images/media/meals/1525872624.jpg",
+  "chinese|moo shu pork": "https://www.themealdb.com/images/media/meals/tzsy461763769901.jpg",
+  "japanese|agedashi tofu": "https://www.themealdb.com/images/media/meals/1525874812.jpg",
+  "japanese|ebi tempura": "https://www.themealdb.com/images/media/meals/xnv4wf1763756529.jpg",
+  "japanese|shishito peppers": "https://www.themealdb.com/images/media/meals/0ljvc51763248075.jpg",
+  "japanese|tonkotsu ramen": "https://www.themealdb.com/images/media/meals/ip5xtp1769779958.jpg",
+  "japanese|chicken katsu curry": "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+  "japanese|sake teriyaki": "https://www.themealdb.com/images/media/meals/xxyupu1468262513.jpg",
+  "japanese|tonkatsu": "https://www.themealdb.com/images/media/meals/lwsnkl1604181187.jpg",
+  "japanese|karaage": "https://www.themealdb.com/images/media/meals/tyywsw1505930373.jpg",
+  "japanese|tuna tataki don": "https://www.themealdb.com/images/media/meals/2dsltq1560461468.jpg",
+  "japanese|nabeyaki udon": "https://www.themealdb.com/images/media/meals/wrustq1511475474.jpg",
+  "japanese|gohan": "https://www.themealdb.com/images/media/meals/kw92t41604181871.jpg",
+  "japanese|wakame salad": "https://www.themealdb.com/images/media/meals/02s6gc1763799560.jpg",
+  "indian|paneer tikka": "https://www.themealdb.com/images/media/meals/xxpqsy1511452222.jpg",
+  "indian|chicken tikka": "https://www.themealdb.com/images/media/meals/fk80jp1763280767.jpg",
+  "indian|seekh kebab": "https://www.themealdb.com/images/media/meals/04axct1763793018.jpg",
+  "indian|onion bhaji": "https://www.themealdb.com/images/media/meals/b5ft861583188991.jpg",
+  "indian|tandoori jhinga": "https://www.themealdb.com/images/media/meals/qptpvt1487339892.jpg",
+  "indian|butter chicken": "https://www.themealdb.com/images/media/meals/uuuspp1511297945.jpg",
+  "indian|lamb rogan josh": "https://www.themealdb.com/images/media/meals/vvstvq1487342592.jpg",
+  "indian|chicken biryani": "https://www.themealdb.com/images/media/meals/syqypv1486981727.jpg",
+  "indian|chana masala": "https://www.themealdb.com/images/media/meals/uwxusv1487344500.jpg",
+  "indian|tandoori chicken": "https://www.themealdb.com/images/media/meals/wruvqv1511880994.jpg",
+  "indian|malai kofta": "https://www.themealdb.com/images/media/meals/lgmnff1763789847.jpg",
+  "indian|lamb korma": "https://www.themealdb.com/images/media/meals/8xuvhj1763794991.jpg",
+  "indian|fish curry": "https://www.themealdb.com/images/media/meals/o5fuq51764789643.jpg",
+  "indian|prawn masala": "https://www.themealdb.com/images/media/meals/4xcfai1763765676.jpg",
+  "indian|baingan bharta": "https://www.themealdb.com/images/media/meals/urtpqw1487341253.jpg",
+  "indian|garlic naan": "https://www.themealdb.com/images/media/meals/hcg6l91763596970.jpg",
+  "indian|jeera rice": "https://www.themealdb.com/images/media/meals/wuyd2h1765655837.jpg",
+  "indian|roti": "https://www.themealdb.com/images/media/meals/nlxald1764112200.jpg",
+  "mexican|sopa de tortilla": "https://www.themealdb.com/images/media/meals/njj1681763297231.jpg",
+  "mexican|empanadas de picadillo": "https://www.themealdb.com/images/media/meals/q99te31763075494.jpg",
+  "mexican|tacos al pastor": "https://www.themealdb.com/images/media/meals/uvuyxu1503067369.jpg",
+  "mexican|tacos de barbacoa": "https://www.themealdb.com/images/media/meals/ypxvwv1505333929.jpg",
+  "mexican|huevos rancheros": "https://www.themealdb.com/images/media/meals/0nswfe1763279040.jpg",
+  "mexican|arroz rojo": "https://www.themealdb.com/images/media/meals/qt4i0n1763256454.jpg",
+  "mexican|nopales asados": "https://www.themealdb.com/images/media/meals/kgfh3q1763075438.jpg",
+  "mexican|charro beans": "https://www.themealdb.com/images/media/meals/21yc5s1760524759.jpg",
+  "mexican|rajas con crema": "https://www.themealdb.com/images/media/meals/x73ll91763247842.jpg",
+  "thai|tom kha gai": "https://www.themealdb.com/images/media/meals/ol2xxt1763582263.jpg",
+  "thai|pad thai": "https://www.themealdb.com/images/media/meals/rg9ze01763479093.jpg",
+  "thai|massaman curry": "https://www.themealdb.com/images/media/meals/tvttqv1504640475.jpg",
+  "thai|pad see ew": "https://www.themealdb.com/images/media/meals/uuuspp1468263334.jpg",
+  "thai|panang curry": "https://www.themealdb.com/images/media/meals/0dhtwr1763371444.jpg",
+  "thai|pad prik king": "https://www.themealdb.com/images/media/meals/rvypwy1503069308.jpg",
+  "thai|som tum thai": "https://www.themealdb.com/images/media/meals/568t931763584227.jpg",
+  "french|coq au vin": "https://www.themealdb.com/images/media/meals/qstyvs1505931190.jpg",
+  "french|boeuf bourguignon": "https://www.themealdb.com/images/media/meals/vtqxtu1511784197.jpg",
+  "french|canard à l'orange": "https://www.themealdb.com/images/media/meals/s73ytv1765567838.jpg",
+  "french|cassoulet": "https://www.themealdb.com/images/media/meals/wxuvuv1511299147.jpg",
+  "french|steak frites": "https://www.themealdb.com/images/media/meals/st9shl1763755808.jpg",
+  "french|confit de canard": "https://www.themealdb.com/images/media/meals/wvpvsu1511786158.jpg",
+  "french|ratatouille": "https://www.themealdb.com/images/media/meals/wrpwuu1511786491.jpg",
+  "french|poulet rôti": "https://www.themealdb.com/images/media/meals/d8bfyg1764117503.jpg",
+  "french|gratin dauphinois": "https://www.themealdb.com/images/media/meals/qwrtut1468418027.jpg",
+  "french|purée de pommes de terre": "https://www.themealdb.com/images/media/meals/8c8m4q1763791156.jpg",
+  "korean|pickled radish": "https://www.themealdb.com/images/media/meals/z0ageb1583189517.jpg",
+  "vietnamese|banh xeo": "https://www.themealdb.com/images/media/meals/sonirb1763782831.jpg",
+  "greek|tzatziki": "https://www.themealdb.com/images/media/meals/ampz9v1763787134.jpg",
+  "greek|saganaki": "https://www.themealdb.com/images/media/meals/wuvryu1468232995.jpg",
+  "greek|moussaka": "https://www.themealdb.com/images/media/meals/ctg8jd1585563097.jpg",
+  "greek|souvlaki": "https://www.themealdb.com/images/media/meals/rjhf741585564676.jpg",
+  "greek|psari plaki": "https://www.themealdb.com/images/media/meals/b79r6f1585566277.jpg",
+  "greek|pita bread": "https://www.themealdb.com/images/media/meals/se5vhk1764114880.jpg",
+  "spanish|patatas bravas": "https://www.themealdb.com/images/media/meals/bvg8sn1763298713.jpg",
+  "spanish|gambas al ajillo": "https://www.themealdb.com/images/media/meals/ze8uwg1763196123.jpg",
+  "spanish|croquetas de jamón": "https://www.themealdb.com/images/media/meals/6dpa7m1763331105.jpg",
+  "spanish|tortilla española": "https://www.themealdb.com/images/media/meals/quuxsx1511476154.jpg",
+  "spanish|jamón ibérico": "https://www.themealdb.com/images/media/meals/hsp1fo1763327867.jpg",
+  "spanish|gazpacho andaluz": "https://www.themealdb.com/images/media/meals/h5qmn31763304965.jpg",
+  "spanish|paella valenciana": "https://www.themealdb.com/images/media/meals/9bl20p1763248192.jpg",
+  "spanish|paella de mariscos": "https://www.themealdb.com/images/media/meals/1520081754.jpg",
+  "spanish|cochinillo asado": "https://www.themealdb.com/images/media/meals/pkopc31683207947.jpg",
+  "spanish|arroz negro": "https://www.themealdb.com/images/media/meals/jc6oub1763196663.jpg",
+  "spanish|fideuà": "https://www.themealdb.com/images/media/meals/wqqvyq1511179730.jpg",
+  "spanish|arroz blanco": "https://www.themealdb.com/images/media/meals/5jdtie1763289302.jpg",
+  "spanish|migas": "https://www.themealdb.com/images/media/meals/xd9aj21740432378.jpg",
+  "lebanese|hummus": "https://www.themealdb.com/images/media/meals/gpon5u1763801180.jpg",
+  "lebanese|baba ganoush": "https://www.themealdb.com/images/media/meals/dlmh401760524897.jpg",
+  "lebanese|falafel": "https://www.themealdb.com/images/media/meals/u5e9qq1763795441.jpg",
+  "lebanese|batata harra": "https://www.themealdb.com/images/media/meals/q8pu1k1764114334.jpg",
+  "lebanese|shawarma lahme": "https://www.themealdb.com/images/media/meals/kcv6hj1598733479.jpg",
+  "lebanese|fatteh": "https://www.themealdb.com/images/media/meals/rlwcc51598734603.jpg",
+  "lebanese|hummus bil lahme": "https://www.themealdb.com/images/media/meals/zub3s91764110535.jpg",
+  "turkish|acılı ezme": "https://www.themealdb.com/images/media/meals/pb6mj11763788331.jpg",
+  "turkish|lahmacun": "https://www.themealdb.com/images/media/meals/tqd3ac1763786065.jpg",
+  "moroccan|khobz": "https://www.themealdb.com/images/media/meals/5u37fy1764116774.jpg",
+  "moroccan|chermoula sardines": "https://www.themealdb.com/images/media/meals/nv5lf31628771380.jpg",
+  "moroccan|moroccan carrot salad": "https://www.themealdb.com/images/media/meals/4o4wh11761848573.jpg",
+  "moroccan|tagine djaj bil zeitoun": "https://www.themealdb.com/images/media/meals/yuwtuu1511295751.jpg",
+  "moroccan|tagine kefta": "https://www.themealdb.com/images/media/meals/8rfd4q1764112993.jpg",
+  "moroccan|couscous royal": "https://www.themealdb.com/images/media/meals/qxytrx1511304021.jpg",
+  "moroccan|moroccan rice": "https://www.themealdb.com/images/media/meals/jcr46d1614763831.jpg",
+  "moroccan|harissa": "https://www.themealdb.com/images/media/meals/yqwtvu1487426027.jpg",
+  "brazilian|banana da terra frita": "https://www.themealdb.com/images/media/meals/sywswr1511383814.jpg",
+  "peruvian|leche de tigre": "https://www.themealdb.com/images/media/meals/jyjlhj1763075323.jpg",
+  "peruvian|salsa criolla": "https://www.themealdb.com/images/media/meals/8b2msz1763074897.jpg",
+  "caribbean|jamaican patty": "https://www.themealdb.com/images/media/meals/ussyxw1515364536.jpg",
+  "caribbean|saltfish fritters": "https://www.themealdb.com/images/media/meals/73o3vq1765317873.jpg",
+  "caribbean|callaloo soup": "https://www.themealdb.com/images/media/meals/zadvgb1699012544.jpg",
+  "caribbean|conch fritters": "https://www.themealdb.com/images/media/meals/ul2uy31764794321.jpg",
+  "caribbean|festival": "https://www.themealdb.com/images/media/meals/g6xb8m1764875029.jpg",
+  "caribbean|escovitch fish bites": "https://www.themealdb.com/images/media/meals/1520084413.jpg",
+  "caribbean|jerk chicken": "https://www.themealdb.com/images/media/meals/tytyxu1515363282.jpg",
+  "caribbean|curry goat": "https://www.themealdb.com/images/media/meals/uc9qp11764796575.jpg",
+  "caribbean|ackee and saltfish": "https://www.themealdb.com/images/media/meals/vytypy1511883765.jpg",
+  "caribbean|oxtail stew": "https://www.themealdb.com/images/media/meals/1520083578.jpg",
+  "caribbean|brown stew chicken": "https://www.themealdb.com/images/media/meals/1529446352.jpg",
+  "caribbean|roti and curry": "https://www.themealdb.com/images/media/meals/n7h5zs1765318909.jpg",
+  "caribbean|escovitch fish": "https://www.themealdb.com/images/media/meals/a15wsa1614349126.jpg",
+  "caribbean|jerk pork": "https://www.themealdb.com/images/media/meals/atd5sh1583188467.jpg",
+  "caribbean|stew peas": "https://www.themealdb.com/images/media/meals/uyqrrv1511553350.jpg",
+  "caribbean|peppered shrimp": "https://www.themealdb.com/images/media/meals/bx07m71764792853.jpg",
+  "caribbean|rice and peas": "https://www.themealdb.com/images/media/meals/pkyvrn1764878267.jpg",
+  "caribbean|dumplings": "https://www.themealdb.com/images/media/meals/tsdbcq1764795636.jpg",
+  "german|sauerkraut": "https://www.themealdb.com/images/media/meals/ra2k8a1764365055.jpg",
+  "italian|bruschetta al pomodoro": "https://foodish-api.com/images/butter-chicken/butter-chicken1.jpg",
+  "italian|arancini": "https://foodish-api.com/images/samosa/samosa1.jpg",
+  "italian|focaccia di recco": "https://foodish-api.com/images/pizza/pizza1.jpg",
+  "italian|gnocchi al pesto genovese": "https://foodish-api.com/images/pasta/pasta1.jpg",
+  "italian|cacio e pepe": "https://foodish-api.com/images/pasta/pasta2.jpg",
+  "italian|pappardelle al cinghiale": "https://foodish-api.com/images/pasta/pasta3.jpg",
+  "italian|orecchiette con cime di rapa": "https://foodish-api.com/images/pasta/pasta4.jpg",
+  "italian|risotto alla milanese": "https://foodish-api.com/images/rice/rice1.jpg",
+  "italian|risotto al limone": "https://foodish-api.com/images/rice/rice2.jpg",
+  "chinese|jiaozi": "https://foodish-api.com/images/samosa/samosa2.jpg",
+  "chinese|zha wonton": "https://foodish-api.com/images/samosa/samosa3.jpg",
+  "chinese|dan dan mian": "https://foodish-api.com/images/pasta/pasta5.jpg",
+  "chinese|zha jiang mian": "https://foodish-api.com/images/pasta/pasta6.jpg",
+  "chinese|char siu bao": "https://foodish-api.com/images/idly/idly1.jpg",
+  "chinese|gong bao xia ren": "https://foodish-api.com/images/idly/idly2.jpg",
+  "chinese|chao fan": "https://foodish-api.com/images/rice/rice3.jpg",
+  "chinese|yangzhou chao fan": "https://foodish-api.com/images/rice/rice4.jpg",
+  "chinese|chao mian": "https://foodish-api.com/images/pasta/pasta7.jpg",
+  "chinese|mantou": "https://foodish-api.com/images/idly/idly3.jpg",
+  "chinese|ji dan chao fan": "https://foodish-api.com/images/rice/rice5.jpg",
+  "japanese|gyoza": "https://foodish-api.com/images/samosa/samosa4.jpg",
+  "indian|samosa": "https://foodish-api.com/images/samosa/samosa5.jpg",
+  "indian|palak paneer": "https://foodish-api.com/images/butter-chicken/butter-chicken2.jpg",
+  "indian|vindaloo": "https://foodish-api.com/images/butter-chicken/butter-chicken3.jpg",
+  "indian|pulao": "https://foodish-api.com/images/biryani/biryani1.jpg",
+  "indian|masala papad": "https://foodish-api.com/images/butter-chicken/butter-chicken4.jpg",
+  "thai|miang kham": "https://foodish-api.com/images/pasta/pasta8.jpg",
+  "korean|japchae": "https://foodish-api.com/images/pasta/pasta9.jpg",
+  "vietnamese|bun bo hue": "https://foodish-api.com/images/pasta/pasta10.jpg",
+  "vietnamese|banh mi thit": "https://foodish-api.com/images/burger/burger1.jpg",
+  "vietnamese|com tam suon": "https://foodish-api.com/images/rice/rice6.jpg",
+  "vietnamese|bun cha": "https://foodish-api.com/images/pasta/pasta11.jpg",
+  "vietnamese|bun rieu": "https://foodish-api.com/images/pasta/pasta12.jpg",
+  "greek|taramasalata": "https://foodish-api.com/images/butter-chicken/butter-chicken5.jpg",
+  "ethiopian|doro wot": "https://foodish-api.com/images/butter-chicken/butter-chicken6.jpg",
+  "ethiopian|injera": "https://foodish-api.com/images/dosa/dosa1.jpg",
+  "turkish|pide": "https://foodish-api.com/images/pizza/pizza2.jpg",
+  "moroccan|tagine mrouzia": "https://foodish-api.com/images/butter-chicken/butter-chicken7.jpg",
+  "moroccan|tagine hout": "https://foodish-api.com/images/butter-chicken/butter-chicken8.jpg",
+  "moroccan|tagine pruneaux": "https://foodish-api.com/images/butter-chicken/butter-chicken9.jpg",
+  "moroccan|tagine khodra": "https://foodish-api.com/images/butter-chicken/butter-chicken10.jpg",
+  "brazilian|coxinha": "https://foodish-api.com/images/samosa/samosa6.jpg",
+  "brazilian|moqueca de camarão": "https://foodish-api.com/images/butter-chicken/butter-chicken11.jpg",
+  "brazilian|arroz branco": "https://foodish-api.com/images/rice/rice7.jpg",
+  "peruvian|arroz con pollo": "https://foodish-api.com/images/rice/rice8.jpg",
+  "peruvian|arroz con mariscos": "https://foodish-api.com/images/rice/rice9.jpg",
+  "peruvian|arroz chaufa": "https://foodish-api.com/images/rice/rice10.jpg",
+  "peruvian|arroz blanco": "https://foodish-api.com/images/rice/rice11.jpg",
+  "caribbean|pelau": "https://foodish-api.com/images/rice/rice12.jpg",
+  "german|flammkuchen": "https://foodish-api.com/images/pizza/pizza3.jpg",
+  "german|kartoffelpuffer": "https://foodish-api.com/images/dosa/dosa2.jpg",
+  "german|maultaschen": "https://foodish-api.com/images/pasta/pasta13.jpg",
+  "german|currywurst": "https://foodish-api.com/images/butter-chicken/butter-chicken12.jpg",
+  "italian|carpaccio di manzo": "https://www.themealdb.com/images/media/meals/grhn401765687086.jpg",
+  "italian|caprese": "https://www.themealdb.com/images/media/meals/3m8yae1763257951.jpg",
+  "italian|vitello tonnato": "https://www.themealdb.com/images/media/meals/a4kgf21763075288.jpg",
+  "italian|crostini ai fegatini": "https://www.themealdb.com/images/media/meals/o2cd4r1764113576.jpg",
+  "italian|burrata con pomodorini": "https://www.themealdb.com/images/media/meals/tbj1bs1764118062.jpg",
+  "italian|antipasto misto": "https://www.themealdb.com/images/media/meals/q47rkb1762324620.jpg",
+  "italian|supplì al telefono": "https://www.themealdb.com/images/media/meals/adxcbq1619787919.jpg",
+  "italian|panzanella": "https://www.themealdb.com/images/media/meals/xvsurr1511719182.jpg",
+  "italian|saltimbocca alla romana": "https://www.themealdb.com/images/media/meals/c0gmo31766594751.jpg",
+  "italian|piccata di vitello": "https://www.themealdb.com/images/media/meals/wxywrq1468235067.jpg",
+  "italian|polenta con funghi": "https://www.themealdb.com/images/media/meals/p277uc1764109195.jpg",
+  "italian|ciabatta al rosmarino": "https://www.themealdb.com/images/media/meals/13fg4j1764441982.jpg",
+  "italian|fagioli all'uccelletto": "https://www.themealdb.com/images/media/meals/jgl9qq1764437635.jpg",
+  "italian|verdure grigliate": "https://www.themealdb.com/images/media/meals/44bzep1761848278.jpg",
+  "italian|insalata di rucola": "https://www.themealdb.com/images/media/meals/yk78uc1763075719.jpg",
+  "italian|patate al forno": "https://www.themealdb.com/images/media/meals/flrajf1762341295.jpg",
+  "italian|spinaci saltati": "https://www.themealdb.com/images/media/meals/020z181619788503.jpg",
+  "italian|caponata": "https://www.themealdb.com/images/media/meals/1548772327.jpg",
+  "italian|peperonata": "https://www.themealdb.com/images/media/meals/wyrqqq1468233628.jpg",
+  "italian|melanzane alla parmigiana": "https://www.themealdb.com/images/media/meals/ywwrsp1511720277.jpg",
+  "chinese|chun juan": "https://www.themealdb.com/images/media/meals/vxuyrx1511302687.jpg",
+  "chinese|cong you bing": "https://www.themealdb.com/images/media/meals/ryppsv1511815505.jpg",
+  "chinese|liang ban huang gua": "https://www.themealdb.com/images/media/meals/m0p0j81765568742.jpg",
+  "chinese|kou shui ji": "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg",
+  "chinese|shao mai": "https://www.themealdb.com/images/media/meals/wrssvt1511556563.jpg",
+  "chinese|pi dan dou fu": "https://www.themealdb.com/images/media/meals/ursuup1487348423.jpg",
+  "chinese|liang pi": "https://www.themealdb.com/images/media/meals/41cxjh1683207682.jpg",
+  "chinese|har gow": "https://www.themealdb.com/images/media/meals/dxpc7j1764370714.jpg",
+  "chinese|ma po dou fu": "https://www.themealdb.com/images/media/meals/1529444830.jpg",
+  "chinese|beijing kao ya": "https://www.themealdb.com/images/media/meals/1nalo51765188375.jpg",
+  "chinese|hui guo rou": "https://www.themealdb.com/images/media/meals/cgl60b1683206581.jpg",
+  "chinese|shui zhu yu": "https://www.themealdb.com/images/media/meals/pbzcrx1763765096.jpg",
+  "chinese|tangcu liji": "https://www.themealdb.com/images/media/meals/bc8v651619789840.jpg",
+  "chinese|mao xue wang": "https://www.themealdb.com/images/media/meals/svprys1511176755.jpg",
+  "chinese|hong shao rou": "https://www.themealdb.com/images/media/meals/ssrrrs1503664277.jpg",
+  "chinese|yu xiang qie zi": "https://www.themealdb.com/images/media/meals/vvpprx1487325699.jpg",
+  "chinese|zheng yu": "https://www.themealdb.com/images/media/meals/qwicc91764368097.jpg",
+  "chinese|la zi ji": "https://www.themealdb.com/images/media/meals/xlqqhw1764369924.jpg",
+  "chinese|gan bian si ji dou": "https://www.themealdb.com/images/media/meals/urzj1d1587670726.jpg",
+  "chinese|pai gu": "https://www.themealdb.com/images/media/meals/md8w601593348504.jpg",
+  "chinese|chao qing cai": "https://www.themealdb.com/images/media/meals/fl4brj1764361323.jpg",
+  "chinese|suanla tang": "https://www.themealdb.com/images/media/meals/4pqimk1683207418.jpg",
+  "chinese|yu mi tang": "https://www.themealdb.com/images/media/meals/lhqev81565090111.jpg",
+  "chinese|luo bo gao": "https://www.themealdb.com/images/media/meals/rpvptu1511641092.jpg",
+  "chinese|ma la tang": "https://www.themealdb.com/images/media/meals/0206h11699013358.jpg",
+  "chinese|liang ban mu er": "https://www.themealdb.com/images/media/meals/e756bf1761848342.jpg",
+  "chinese|bai fan": "https://www.themealdb.com/images/media/meals/804v1j1764367088.jpg",
+  "japanese|edamame": "https://www.themealdb.com/images/media/meals/qywups1511796761.jpg",
+  "japanese|takoyaki": "https://www.themealdb.com/images/media/meals/naqyel1608588563.jpg",
+  "japanese|sashimi moriawase": "https://www.themealdb.com/images/media/meals/uuqvwu1504629254.jpg",
+  "japanese|chawanmushi": "https://www.themealdb.com/images/media/meals/z267f71764364072.jpg",
+  "japanese|tataki": "https://www.themealdb.com/images/media/meals/xqwwpy1483908697.jpg",
+  "japanese|nasu dengaku": "https://www.themealdb.com/images/media/meals/hqaejl1695738653.jpg",
+  "japanese|sunomono": "https://www.themealdb.com/images/media/meals/1550441882.jpg",
+  "japanese|okonomiyaki": "https://www.themealdb.com/images/media/meals/tvvxpv1511191952.jpg",
+  "japanese|negima yakitori": "https://www.themealdb.com/images/media/meals/6vi2cv1763075785.jpg",
+  "japanese|chirashi don": "https://www.themealdb.com/images/media/meals/g33c901763365484.jpg",
+  "japanese|unagi don": "https://www.themealdb.com/images/media/meals/1549542877.jpg",
+  "japanese|shoyu ramen": "https://www.themealdb.com/images/media/meals/tkxquw1628771028.jpg",
+  "japanese|sukiyaki": "https://www.themealdb.com/images/media/meals/60oc3k1699009846.jpg",
+  "japanese|tempura moriawase": "https://www.themealdb.com/images/media/meals/16zbeu1763789342.jpg",
+  "japanese|shabu-shabu": "https://www.themealdb.com/images/media/meals/wpputp1511812960.jpg",
+  "japanese|gyudon": "https://www.themealdb.com/images/media/meals/z1hz7z1765316430.jpg",
+  "japanese|miso ramen": "https://www.themealdb.com/images/media/meals/vrspxv1511722107.jpg",
+  "japanese|saba shioyaki": "https://www.themealdb.com/images/media/meals/t3r3ka1560461972.jpg",
+  "japanese|miso shiru": "https://www.themealdb.com/images/media/meals/lrfdwz1764438393.jpg",
+  "japanese|kinpira gobo": "https://www.themealdb.com/images/media/meals/vc08jn1628769553.jpg",
+  "japanese|tsukemono": "https://www.themealdb.com/images/media/meals/gpz67p1560458984.jpg",
+  "japanese|hijiki no nimono": "https://www.themealdb.com/images/media/meals/fm01ky1764366365.jpg",
+  "japanese|tamagoyaki": "https://www.themealdb.com/images/media/meals/oal8x31764119345.jpg",
+  "japanese|ohitashi": "https://www.themealdb.com/images/media/meals/vqpwrv1511723001.jpg",
+  "japanese|nikujaga": "https://www.themealdb.com/images/media/meals/sbx7n71587673021.jpg",
+  "japanese|takuan": "https://www.themealdb.com/images/media/meals/qtuwxu1468233098.jpg",
+  "japanese|onigiri": "https://www.themealdb.com/images/media/meals/qrqywr1503066605.jpg",
+  "indian|pakora": "https://www.themealdb.com/images/media/meals/xrrtss1511555269.jpg",
+  "indian|aloo tikki": "https://www.themealdb.com/images/media/meals/wyxwsp1486979827.jpg",
+  "indian|papadum": "https://www.themealdb.com/images/media/meals/er4d081765186828.jpg",
+  "indian|dahi puri": "https://www.themealdb.com/images/media/meals/qpxvuq1511798906.jpg",
+  "indian|bhel puri": "https://www.themealdb.com/images/media/meals/uwvxpv1511557015.jpg",
+  "indian|ragda pattice": "https://www.themealdb.com/images/media/meals/k29viq1585565980.jpg",
+  "indian|dahi vada": "https://www.themealdb.com/images/media/meals/4hzyvq1763792564.jpg",
+  "indian|dal makhani": "https://www.themealdb.com/images/media/meals/4mhr3u1763481087.jpg",
+  "indian|aloo gobi": "https://www.themealdb.com/images/media/meals/tvtxpq1511464705.jpg",
+  "indian|saag gosht": "https://www.themealdb.com/images/media/meals/xvnx8j1763287209.jpg",
+  "indian|rajma": "https://www.themealdb.com/images/media/meals/rwvw8q1765660071.jpg",
+  "indian|naan": "https://www.themealdb.com/images/media/meals/qtqwwu1511792650.jpg",
+  "indian|raita": "https://www.themealdb.com/images/media/meals/j80gmw1764372176.jpg",
+  "indian|achar": "https://www.themealdb.com/images/media/meals/n7qnkb1630444129.jpg",
+  "indian|paratha": "https://www.themealdb.com/images/media/meals/rqvwxt1511384809.jpg",
+  "indian|dal tadka": "https://www.themealdb.com/images/media/meals/k9o0xr1764373018.jpg",
+  "indian|puri": "https://www.themealdb.com/images/media/meals/uttuxy1511382180.jpg",
+  "mexican|guacamole": "https://www.themealdb.com/images/media/meals/1550442508.jpg",
+  "mexican|queso fundido": "https://www.themealdb.com/images/media/meals/erzs951763296201.jpg",
+  "mexican|elote": "https://www.themealdb.com/images/media/meals/8oupz51761848432.jpg",
+  "mexican|nachos": "https://www.themealdb.com/images/media/meals/u9ezi21764375474.jpg",
+  "mexican|taquitos": "https://www.themealdb.com/images/media/meals/tqtywx1468317395.jpg",
+  "mexican|ceviche de camarón": "https://www.themealdb.com/images/media/meals/yypvst1511386427.jpg",
+  "mexican|esquites": "https://www.themealdb.com/images/media/meals/twspvx1511784937.jpg",
+  "mexican|flautas": "https://www.themealdb.com/images/media/meals/p9tebp1764118792.jpg",
+  "mexican|chile con queso": "https://www.themealdb.com/images/media/meals/5i25sg1763075353.jpg",
+  "mexican|quesadilla de huitlacoche": "https://www.themealdb.com/images/media/meals/kggfo91763288633.jpg",
+  "mexican|enchiladas rojas": "https://www.themealdb.com/images/media/meals/v8eaed1763257313.jpg",
+  "mexican|mole poblano": "https://www.themealdb.com/images/media/meals/6cskio1763338156.jpg",
+  "mexican|carnitas": "https://www.themealdb.com/images/media/meals/0y6uvc1763258983.jpg",
+  "mexican|birria de res": "https://www.themealdb.com/images/media/meals/ldnrm91576791881.jpg",
+  "mexican|chiles rellenos": "https://www.themealdb.com/images/media/meals/vvusxs1483907034.jpg",
+  "mexican|tamales de pollo": "https://www.themealdb.com/images/media/meals/r33cud1576791081.jpg",
+  "mexican|pozole rojo": "https://www.themealdb.com/images/media/meals/nxnny61763250596.jpg",
+  "mexican|burrito de carne asada": "https://www.themealdb.com/images/media/meals/as88dq1762772486.jpg",
+  "mexican|cochinita pibil": "https://www.themealdb.com/images/media/meals/rvtvuw1511190488.jpg",
+  "mexican|chilaquiles verdes": "https://www.themealdb.com/images/media/meals/92wbmf1763252334.jpg",
+  "mexican|enchiladas suizas": "https://www.themealdb.com/images/media/meals/1d85821576790598.jpg",
+  "mexican|carne asada": "https://www.themealdb.com/images/media/meals/0sd7ac1764787957.jpg",
+  "mexican|frijoles refritos": "https://www.themealdb.com/images/media/meals/7vpsfp1608588991.jpg",
+  "mexican|tortillas de maíz": "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
+  "mexican|pico de gallo": "https://www.themealdb.com/images/media/meals/xb97a81583266727.jpg",
+  "mexican|ensalada de jícama": "https://www.themealdb.com/images/media/meals/kdz63q1764793442.jpg",
+  "mexican|salsa roja": "https://www.themealdb.com/images/media/meals/vz94r81760534692.jpg",
+  "mexican|crema de elote": "https://www.themealdb.com/images/media/meals/0h1b7m1764120235.jpg",
+  "thai|tom yum goong": "https://www.themealdb.com/images/media/meals/wurrux1468416624.jpg",
+  "thai|satay gai": "https://www.themealdb.com/images/media/meals/stpuws1511191310.jpg",
+  "thai|tod mun pla": "https://www.themealdb.com/images/media/meals/c7lzrl1683208757.jpg",
+  "thai|som tum": "https://www.themealdb.com/images/media/meals/st1ifa1583267248.jpg",
+  "thai|poh pia tod": "https://www.themealdb.com/images/media/meals/tnwy8m1628770384.jpg",
+  "thai|larb gai": "https://www.themealdb.com/images/media/meals/pn59o51628769837.jpg",
+  "thai|goong sarong": "https://www.themealdb.com/images/media/meals/ei21r61764365935.jpg",
+  "thai|yum woon sen": "https://www.themealdb.com/images/media/meals/pvfkz61761595976.jpg",
+  "thai|kai jeow": "https://www.themealdb.com/images/media/meals/wuxrtu1483564410.jpg",
+  "thai|yum neua": "https://www.themealdb.com/images/media/meals/u4scbo1764446514.jpg",
+  "thai|gaeng keow wan": "https://www.themealdb.com/images/media/meals/2wx8cm1763373419.jpg",
+  "thai|gaeng phet": "https://www.themealdb.com/images/media/meals/wxyvqq1511723401.jpg",
+  "thai|khao pad": "https://www.themealdb.com/images/media/meals/oaqz9f1766593912.jpg",
+  "thai|pad kra pao": "https://www.themealdb.com/images/media/meals/8cvkcz1766596315.jpg",
+  "thai|pla rad prik": "https://www.themealdb.com/images/media/meals/ne5wzp1764115568.jpg",
+  "thai|gaeng hung lay": "https://www.themealdb.com/images/media/meals/kzxflc1763194887.jpg",
+  "thai|khao soi": "https://www.themealdb.com/images/media/meals/wtqrqw1511639627.jpg",
+  "thai|pla neung manao": "https://www.themealdb.com/images/media/meals/1529446137.jpg",
+  "thai|gai yang": "https://www.themealdb.com/images/media/meals/47y6ii1765658818.jpg",
+  "thai|kao niao": "https://www.themealdb.com/images/media/meals/y7h0lq1683208991.jpg",
+  "thai|pak boong fai daeng": "https://www.themealdb.com/images/media/meals/utxryw1511721587.jpg",
+  "thai|khao suay": "https://www.themealdb.com/images/media/meals/1ugsho1763248007.jpg",
+  "thai|tua tord": "https://www.themealdb.com/images/media/meals/uuxwvq1483907861.jpg",
+  "thai|nam jim jaew": "https://www.themealdb.com/images/media/meals/849jd81763075251.jpg",
+  "thai|phak ruam mit": "https://www.themealdb.com/images/media/meals/ae6clc1760524712.jpg",
+  "thai|yum makeua yao": "https://www.themealdb.com/images/media/meals/ttfxxn1762773067.jpg",
+  "thai|gaeng jued": "https://www.themealdb.com/images/media/meals/gtpvwp1763363947.jpg",
+  "thai|pla muek tod gratiem": "https://www.themealdb.com/images/media/meals/ytttsv1511798734.jpg",
+  "french|soupe à l'oignon": "https://www.themealdb.com/images/media/meals/9f4z6v1598734293.jpg",
+  "french|escargots de bourgogne": "https://www.themealdb.com/images/media/meals/uquqtu1511178042.jpg",
+  "french|pâté de campagne": "https://www.themealdb.com/images/media/meals/kzi6p51764787198.jpg",
+  "french|quiche lorraine": "https://www.themealdb.com/images/media/meals/ysxwuq1487323065.jpg",
+  "french|tartare de boeuf": "https://www.themealdb.com/images/media/meals/7n8su21699013057.jpg",
+  "french|gougères": "https://www.themealdb.com/images/media/meals/vptqpw1511798500.jpg",
+  "french|terrine de foie gras": "https://www.themealdb.com/images/media/meals/raqjbj1762773035.jpg",
+  "french|salade niçoise": "https://www.themealdb.com/images/media/meals/wssvvs1511785879.jpg",
+  "french|soufflé au fromage": "https://www.themealdb.com/images/media/meals/0s80wo1764374393.jpg",
+  "french|velouté de champignons": "https://www.themealdb.com/images/media/meals/6ht8141764786479.jpg",
+  "french|salade lyonnaise": "https://www.themealdb.com/images/media/meals/vwwspt1487394060.jpg",
+  "french|coquilles saint-jacques": "https://www.themealdb.com/images/media/meals/yvpuuy1511797244.jpg",
+  "french|bouillabaisse": "https://www.themealdb.com/images/media/meals/xvrrux1511783685.jpg",
+  "french|blanquette de veau": "https://www.themealdb.com/images/media/meals/1543774956.jpg",
+  "french|sole meunière": "https://www.themealdb.com/images/media/meals/lvn2d51598732465.jpg",
+  "french|navarin d'agneau": "https://www.themealdb.com/images/media/meals/sqrtwu1511721265.jpg",
+  "french|magret de canard": "https://www.themealdb.com/images/media/meals/9zqrod1763075574.jpg",
+  "french|moules marinières": "https://www.themealdb.com/images/media/meals/u2lhqb1763331899.jpg",
+  "french|croque-monsieur": "https://www.themealdb.com/images/media/meals/1529444113.jpg",
+  "french|pommes dauphine": "https://www.themealdb.com/images/media/meals/rw64di1766595573.jpg",
+  "french|haricots verts": "https://www.themealdb.com/images/media/meals/q8sp3j1593349686.jpg",
+  "french|pommes frites": "https://www.themealdb.com/images/media/meals/1xscby1764790242.jpg",
+  "french|salade verte": "https://www.themealdb.com/images/media/meals/yoj48r1763817100.jpg",
+  "french|champignons à la crème": "https://www.themealdb.com/images/media/meals/8825lo1763815264.jpg",
+  "french|baguette": "https://www.themealdb.com/images/media/meals/ctw3ba1763788978.jpg",
+  "french|ratatouille confite": "https://www.themealdb.com/images/media/meals/bopa2i1683209167.jpg",
+  "french|pommes sarladaises": "https://www.themealdb.com/images/media/meals/xutquv1505330523.jpg",
+  "french|carottes vichy": "https://www.themealdb.com/images/media/meals/lpd4wy1614347943.jpg",
+  "korean|kimchi jeon": "https://www.themealdb.com/images/media/meals/n41ny81608588066.jpg",
+  "korean|tteokbokki": "https://www.themealdb.com/images/media/meals/xihv0c1764447887.jpg",
+  "korean|mandu": "https://www.themealdb.com/images/media/meals/thazgm1555350962.jpg",
+  "korean|pajeon": "https://www.themealdb.com/images/media/meals/kvbotn1581012881.jpg",
+  "korean|kimbap": "https://www.themealdb.com/images/media/meals/y2irzl1585563479.jpg",
+  "korean|gyeran jjim": "https://www.themealdb.com/images/media/meals/1529445893.jpg",
+  "korean|hobakjeon": "https://www.themealdb.com/images/media/meals/xrysxr1483568462.jpg",
+  "korean|yangnyeom tongdak": "https://www.themealdb.com/images/media/meals/jyylmo1763790808.jpg",
+  "korean|odeng": "https://www.themealdb.com/images/media/meals/sxxpst1468569714.jpg",
+  "korean|gamja croquette": "https://www.themealdb.com/images/media/meals/sktequ1764447186.jpg",
+  "korean|dubu kimchi": "https://www.themealdb.com/images/media/meals/ysqupp1511640538.jpg",
+  "korean|samgyeopsal": "https://www.themealdb.com/images/media/meals/wsqqsw1515364068.jpg",
+  "korean|bulgogi": "https://www.themealdb.com/images/media/meals/sng9bm1765320170.jpg",
+  "korean|bibimbap": "https://www.themealdb.com/images/media/meals/dd7t4d1764877271.jpg",
+  "korean|kimchi jjigae": "https://www.themealdb.com/images/media/meals/11bvtm1764795135.jpg",
+  "korean|sundubu jjigae": "https://www.themealdb.com/images/media/meals/08c5f41764791918.jpg",
+  "korean|galbi": "https://www.themealdb.com/images/media/meals/paejva1765321314.jpg",
+  "korean|dakgalbi": "https://www.themealdb.com/images/media/meals/xj9sa81764788866.jpg",
+  "korean|jjajangmyeon": "https://www.themealdb.com/images/media/meals/zc9cwz1763196177.jpg",
+  "korean|samgyetang": "https://www.themealdb.com/images/media/meals/d8f6qx1604182128.jpg",
+  "korean|doenjang jjigae": "https://www.themealdb.com/images/media/meals/z1tfnw1764443171.jpg",
+  "korean|budae jjigae": "https://www.themealdb.com/images/media/meals/utqnjv1763598650.jpg",
+  "korean|jeyuk bokkeum": "https://www.themealdb.com/images/media/meals/1bsv1q1560459826.jpg",
+  "korean|haemul pajeon": "https://www.themealdb.com/images/media/meals/sxysrt1468240488.jpg",
+  "korean|galbitang": "https://www.themealdb.com/images/media/meals/0bpjb11763075817.jpg",
+  "korean|kimchi": "https://www.themealdb.com/images/media/meals/vwrpps1503068729.jpg",
+  "korean|kongnamul": "https://www.themealdb.com/images/media/meals/utxqpt1511639216.jpg",
+  "korean|sigeumchi namul": "https://www.themealdb.com/images/media/meals/8x09hy1560460923.jpg",
+  "korean|musaengchae": "https://www.themealdb.com/images/media/meals/40r49m1763197022.jpg",
+  "korean|gamja jorim": "https://www.themealdb.com/images/media/meals/lqampv1762325397.jpg",
+  "korean|myeolchi bokkeum": "https://www.themealdb.com/images/media/meals/qpqtuu1511386216.jpg",
+  "korean|oi sobagi": "https://www.themealdb.com/images/media/meals/sywrsu1511463066.jpg",
+  "korean|dotori muk": "https://www.themealdb.com/images/media/meals/76nffj1763593933.jpg",
+  "korean|bap": "https://www.themealdb.com/images/media/meals/4er7mj1598733193.jpg",
+  "vietnamese|goi cuon": "https://www.themealdb.com/images/media/meals/4i5cnx1587672171.jpg",
+  "vietnamese|cha gio": "https://www.themealdb.com/images/media/meals/mlchx21564916997.jpg",
+  "vietnamese|goi ga": "https://www.themealdb.com/images/media/meals/1525873040.jpg",
+  "vietnamese|banh khot": "https://www.themealdb.com/images/media/meals/gdn1ot1763075684.jpg",
+  "vietnamese|nem nuong": "https://www.themealdb.com/images/media/meals/72fgzj1764109947.jpg",
+  "vietnamese|bo tai chanh": "https://www.themealdb.com/images/media/meals/sxrpws1511555907.jpg",
+  "vietnamese|chao tom": "https://www.themealdb.com/images/media/meals/xrttsx1487339558.jpg",
+  "vietnamese|goi du du": "https://www.themealdb.com/images/media/meals/kos9av1699014767.jpg",
+  "vietnamese|banh cuon": "https://www.themealdb.com/images/media/meals/qtwtss1468572261.jpg",
+  "vietnamese|bo la lot": "https://www.themealdb.com/images/media/meals/k420tj1585565244.jpg",
+  "vietnamese|sup mang cua": "https://www.themealdb.com/images/media/meals/j2n7vg1761848636.jpg",
+  "vietnamese|pho bo": "https://www.themealdb.com/images/media/meals/uttrxw1511637813.jpg",
+  "vietnamese|ca kho to": "https://www.themealdb.com/images/media/meals/xr0n4r1576788363.jpg",
+  "vietnamese|bo luc lac": "https://www.themealdb.com/images/media/meals/wtsvxx1511296896.jpg",
+  "vietnamese|ga nuong": "https://www.themealdb.com/images/media/meals/x2fw9e1560460636.jpg",
+  "vietnamese|mi quang": "https://www.themealdb.com/images/media/meals/ntafxw1763586291.jpg",
+  "vietnamese|pho ga": "https://www.themealdb.com/images/media/meals/5sgsob1763196284.jpg",
+  "vietnamese|lau hai san": "https://www.themealdb.com/images/media/meals/urtqut1511723591.jpg",
+  "vietnamese|canh chua ca": "https://www.themealdb.com/images/media/meals/35kejr1763599712.jpg",
+  "vietnamese|thit kho trung": "https://www.themealdb.com/images/media/meals/wf49qs1763075222.jpg",
+  "vietnamese|nuoc cham": "https://www.themealdb.com/images/media/meals/uh1n5u1763075545.jpg",
+  "vietnamese|rau muong xao toi": "https://www.themealdb.com/images/media/meals/cuio7s1555492979.jpg",
+  "vietnamese|do chua": "https://www.themealdb.com/images/media/meals/vssrtx1511557680.jpg",
+  "vietnamese|com trang": "https://www.themealdb.com/images/media/meals/wvqpwt1468339226.jpg",
+  "vietnamese|goi xoai": "https://www.themealdb.com/images/media/meals/xquakq1619787532.jpg",
+  "vietnamese|dau hu chien": "https://www.themealdb.com/images/media/meals/wdfa171763065079.jpg",
+  "vietnamese|canh rau": "https://www.themealdb.com/images/media/meals/qe8pf51576795532.jpg",
+  "vietnamese|bap xao": "https://www.themealdb.com/images/media/meals/xwutvy1511555540.jpg",
+  "vietnamese|dua leo": "https://www.themealdb.com/images/media/meals/tzt3it1764363293.jpg",
+  "vietnamese|goi cuon chay": "https://www.themealdb.com/images/media/meals/6sarfo1762340107.jpg",
+  "greek|spanakopita": "https://www.themealdb.com/images/media/meals/9tddhg1764443699.jpg",
+  "greek|dolmades": "https://www.themealdb.com/images/media/meals/uttupv1511815050.jpg",
+  "greek|melitzanosalata": "https://www.themealdb.com/images/media/meals/x372ug1598733932.jpg",
+  "greek|tirokroketes": "https://www.themealdb.com/images/media/meals/ssyqwr1511451678.jpg",
+  "greek|keftedakia": "https://www.themealdb.com/images/media/meals/1ngcbf1628770793.jpg",
+  "greek|horiatiki": "https://www.themealdb.com/images/media/meals/o7p9581608589317.jpg",
+  "greek|fava": "https://www.themealdb.com/images/media/meals/i5o2b61763739053.jpg",
+  "greek|gavros marinatos": "https://www.themealdb.com/images/media/meals/vwuprt1511813703.jpg",
+  "greek|htipiti": "https://www.themealdb.com/images/media/meals/9nh4dl1766435484.jpg",
+  "greek|kolokithokeftedes": "https://www.themealdb.com/images/media/meals/wai9bw1619788844.jpg",
+  "greek|gyro": "https://www.themealdb.com/images/media/meals/swttys1511385853.jpg",
+  "greek|pastitsio": "https://www.themealdb.com/images/media/meals/s9qyzd1764790772.jpg",
+  "greek|kleftiko": "https://www.themealdb.com/images/media/meals/zry07j1763779321.jpg",
+  "greek|stifado": "https://www.themealdb.com/images/media/meals/8a8fu01762772651.jpg",
+  "greek|garides saganaki": "https://www.themealdb.com/images/media/meals/z9g8011763075640.jpg",
+  "greek|yemista": "https://www.themealdb.com/images/media/meals/hxcuj01762772827.jpg",
+  "greek|paidakia": "https://www.themealdb.com/images/media/meals/yxsurp1511304301.jpg",
+  "greek|giouvetsi": "https://www.themealdb.com/images/media/meals/c400ok1764439058.jpg",
+  "greek|kotopoulo lemonato": "https://www.themealdb.com/images/media/meals/4yjart1763248459.jpg",
+  "greek|bakaliaros skordalia": "https://www.themealdb.com/images/media/meals/rwuyqx1511383174.jpg",
+  "greek|patates lemonates": "https://www.themealdb.com/images/media/meals/qxuqtt1511724269.jpg",
+  "greek|horta vrasta": "https://www.themealdb.com/images/media/meals/gkcdpl1764441325.jpg",
+  "greek|fasolakia": "https://www.themealdb.com/images/media/meals/c9a3l31593261890.jpg",
+  "greek|elies marinates": "https://www.themealdb.com/images/media/meals/yyrrxr1511816289.jpg",
+  "greek|gigantes plaki": "https://www.themealdb.com/images/media/meals/ssxvup1511387476.jpg",
+  "greek|spanakoryzo": "https://www.themealdb.com/images/media/meals/qtuuys1511387068.jpg",
+  "greek|dakos": "https://www.themealdb.com/images/media/meals/1544384070.jpg",
+  "greek|bamies": "https://www.themealdb.com/images/media/meals/rxvxrr1511797671.jpg",
+  "greek|tiganites patates": "https://www.themealdb.com/images/media/meals/kwmdk41764120884.jpg",
+  "spanish|pan con tomate": "https://www.themealdb.com/images/media/meals/45xxr21593348847.jpg",
+  "spanish|boquerones en vinagre": "https://www.themealdb.com/images/media/meals/vvtvtr1511180578.jpg",
+  "spanish|pimientos de padrón": "https://www.themealdb.com/images/media/meals/hglsbl1614346998.jpg",
+  "spanish|manchego con membrillo": "https://www.themealdb.com/images/media/meals/xvgpng1764121726.jpg",
+  "spanish|pulpo a la gallega": "https://www.themealdb.com/images/media/meals/yh3sg71763741307.jpg",
+  "spanish|aceitunas aliñadas": "https://www.themealdb.com/images/media/meals/x0lk931587671540.jpg",
+  "spanish|escalivada": "https://www.themealdb.com/images/media/meals/e8ihjp1764123021.jpg",
+  "spanish|fabada asturiana": "https://www.themealdb.com/images/media/meals/x6jqog1764359857.jpg",
+  "spanish|bacalao a la vizcaína": "https://www.themealdb.com/images/media/meals/vvn5f71764360273.jpg",
+  "spanish|pollo al chilindron": "https://www.themealdb.com/images/media/meals/58bkyo1593350017.jpg",
+  "spanish|cordero asado": "https://www.themealdb.com/images/media/meals/fqpqml1764359125.jpg",
+  "spanish|merluza a la vasca": "https://www.themealdb.com/images/media/meals/cyuhwp1764362103.jpg",
+  "spanish|pimientos rellenos": "https://www.themealdb.com/images/media/meals/om5hsl1764364721.jpg",
+  "spanish|rabo de toro": "https://www.themealdb.com/images/media/meals/cybyue1614349443.jpg",
+  "spanish|albondigas en salsa": "https://www.themealdb.com/images/media/meals/vmz7gl1614350221.jpg",
+  "spanish|ensalada mixta": "https://www.themealdb.com/images/media/meals/do7zps1614349775.jpg",
+  "spanish|pisto manchego": "https://www.themealdb.com/images/media/meals/ewcikl1614348364.jpg",
+  "spanish|espinacas con garbanzos": "https://www.themealdb.com/images/media/meals/wii0591764375062.jpg",
+  "spanish|pan de cristal": "https://www.themealdb.com/images/media/meals/ebvuir1699013665.jpg",
+  "spanish|judías verdes": "https://www.themealdb.com/images/media/meals/yqqqwu1511816912.jpg",
+  "spanish|piquillos rellenos": "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
+  "spanish|ensaladilla rusa": "https://www.themealdb.com/images/media/meals/rtwwvv1511799504.jpg",
+  "spanish|champiñones al ajillo": "https://www.themealdb.com/images/media/meals/0iryz91763778419.jpg",
+  "lebanese|fattoush": "https://www.themealdb.com/images/media/meals/96lt871763480970.jpg",
+  "lebanese|tabbouleh": "https://www.themealdb.com/images/media/meals/u03xhi1763308917.jpg",
+  "lebanese|kibbeh maqliyyeh": "https://www.themealdb.com/images/media/meals/qwtrtp1511799242.jpg",
+  "lebanese|labneh": "https://www.themealdb.com/images/media/meals/usuqtp1511385394.jpg",
+  "lebanese|manakeesh": "https://www.themealdb.com/images/media/meals/cp74zo1762341241.jpg",
+  "lebanese|warak enab": "https://www.themealdb.com/images/media/meals/ruwpww1511817242.jpg",
+  "lebanese|muhammara": "https://www.themealdb.com/images/media/meals/v5jrnn1764362830.jpg",
+  "lebanese|shanklish": "https://www.themealdb.com/images/media/meals/hhm7xy1763075871.jpg",
+  "lebanese|kebbeh nayyeh": "https://www.themealdb.com/images/media/meals/prjve31763486864.jpg",
+  "lebanese|shish taouk": "https://www.themealdb.com/images/media/meals/ppodrp1762325183.jpg",
+  "lebanese|kafta meshwiye": "https://www.themealdb.com/images/media/meals/sqpqtp1515365614.jpg",
+  "lebanese|kibbeh bil sanieh": "https://www.themealdb.com/images/media/meals/xrrwpx1487347049.jpg",
+  "lebanese|mloukhieh": "https://www.themealdb.com/images/media/meals/sfahy01763752319.jpg",
+  "lebanese|sayyadieh": "https://www.themealdb.com/images/media/meals/qtqvys1468573168.jpg",
+  "lebanese|lahm mishwi": "https://www.themealdb.com/images/media/meals/iydbwy1763816111.jpg",
+  "lebanese|dawood basha": "https://www.themealdb.com/images/media/meals/ro8mzj1763800655.jpg",
+  "lebanese|fasolia bi lahme": "https://www.themealdb.com/images/media/meals/ysqrus1487425681.jpg",
+  "lebanese|koussa mehshi": "https://www.themealdb.com/images/media/meals/tqrrsq1511723764.jpg",
+  "lebanese|arayes": "https://www.themealdb.com/images/media/meals/vtxyxv1483567157.jpg",
+  "lebanese|moghrabieh": "https://www.themealdb.com/images/media/meals/7mxnzz1593350801.jpg",
+  "lebanese|khubz arabi": "https://www.themealdb.com/images/media/meals/hyk47c1762772689.jpg",
+  "lebanese|riz a dajaj": "https://www.themealdb.com/images/media/meals/s1jxzl1764369317.jpg",
+  "lebanese|hindbeh": "https://www.themealdb.com/images/media/meals/lx1kkj1593349302.jpg",
+  "lebanese|mujaddara": "https://www.themealdb.com/images/media/meals/hx335q1619789561.jpg",
+  "lebanese|loubieh bi zeit": "https://www.themealdb.com/images/media/meals/lmc6r51764365554.jpg",
+  "lebanese|toum": "https://www.themealdb.com/images/media/meals/1549542994.jpg",
+  "lebanese|fatayer sabanekh": "https://www.themealdb.com/images/media/meals/1550440197.jpg",
+  "lebanese|salata arabieh": "https://www.themealdb.com/images/media/meals/ikizdm1763760862.jpg",
+  "lebanese|pickled turnips": "https://www.themealdb.com/images/media/meals/prrirc1763781360.jpg",
+  "ethiopian|sambusa": "https://www.themealdb.com/images/media/meals/yxiilf1763759428.jpg",
+  "ethiopian|kategna": "https://www.themealdb.com/images/media/meals/xqrwyr1511133646.jpg",
+  "ethiopian|azifa": "https://www.themealdb.com/images/media/meals/5xdrkw1764444472.jpg",
+  "ethiopian|buticha": "https://www.themealdb.com/images/media/meals/ckbx1h1764123606.jpg",
+  "ethiopian|yataklete salata": "https://www.themealdb.com/images/media/meals/gqlxgc1764368767.jpg",
+  "ethiopian|dabo kolo": "https://www.themealdb.com/images/media/meals/tqd7s21763780609.jpg",
+  "ethiopian|shiro fitfit": "https://www.themealdb.com/images/media/meals/5r5rvx1763287943.jpg",
+  "ethiopian|enqulal firfir": "https://www.themealdb.com/images/media/meals/6ut2og1619790195.jpg",
+  "ethiopian|timatim salata": "https://www.themealdb.com/images/media/meals/93iok31766436070.jpg",
+  "ethiopian|ayib": "https://www.themealdb.com/images/media/meals/crd1jz1763592990.jpg",
+  "ethiopian|kitfo leb leb": "https://www.themealdb.com/images/media/meals/g373701551450225.jpg",
+  "ethiopian|difin misir": "https://www.themealdb.com/images/media/meals/wpkfin1763597958.jpg",
+  "ethiopian|kitfo": "https://www.themealdb.com/images/media/meals/i8l2fu1763742525.jpg",
+  "ethiopian|tibs": "https://www.themealdb.com/images/media/meals/swo87v1763595282.jpg",
+  "ethiopian|key wot": "https://www.themealdb.com/images/media/meals/1529445434.jpg",
+  "ethiopian|misir wot": "https://www.themealdb.com/images/media/meals/fpl3mv1766433431.jpg",
+  "ethiopian|yebeg tibs": "https://www.themealdb.com/images/media/meals/1oz4nb1765687990.jpg",
+  "ethiopian|zilzil tibs": "https://www.themealdb.com/images/media/meals/j9nray1765657692.jpg",
+  "ethiopian|shiro wot": "https://www.themealdb.com/images/media/meals/f3cxnc1765656994.jpg",
+  "ethiopian|yasa tibs": "https://www.themealdb.com/images/media/meals/h3ijwo1581013377.jpg",
+  "ethiopian|alicha wot": "https://www.themealdb.com/images/media/meals/7ttta31593350374.jpg",
+  "ethiopian|derek tibs": "https://www.themealdb.com/images/media/meals/gr4lo51763791826.jpg",
+  "ethiopian|siga wot": "https://www.themealdb.com/images/media/meals/w36ets1764362474.jpg",
+  "ethiopian|yebeg wot": "https://www.themealdb.com/images/media/meals/1550441275.jpg",
+  "ethiopian|beyainatu": "https://www.themealdb.com/images/media/meals/3um6il1763794322.jpg",
+  "ethiopian|gomen": "https://www.themealdb.com/images/media/meals/uwxqwy1483389553.jpg",
+  "ethiopian|yemisir kik": "https://www.themealdb.com/images/media/meals/9ptx0a1565090843.jpg",
+  "ethiopian|tikil gomen": "https://www.themealdb.com/images/media/meals/o2wb6p1581005243.jpg",
+  "ethiopian|fasolia": "https://www.themealdb.com/images/media/meals/bpkxtw1763332446.jpg",
+  "ethiopian|atkilt": "https://www.themealdb.com/images/media/meals/pqulvm1763282839.jpg",
+  "ethiopian|yeshimbra asa": "https://www.themealdb.com/images/media/meals/8ovxf41763253962.jpg",
+  "ethiopian|kik alicha": "https://www.themealdb.com/images/media/meals/si2rty1763282314.jpg",
+  "ethiopian|kocho": "https://www.themealdb.com/images/media/meals/2wt8721763334199.jpg",
+  "ethiopian|niter kibbeh": "https://www.themealdb.com/images/media/meals/sl6vqv1763335988.jpg",
+  "turkish|sigara böreği": "https://www.themealdb.com/images/media/meals/c6ghxm1763335584.jpg",
+  "turkish|mercimek çorbası": "https://www.themealdb.com/images/media/meals/9kwatm1763327074.jpg",
+  "turkish|çiğ köfte": "https://www.themealdb.com/images/media/meals/a08uqk1761848682.jpg",
+  "turkish|patlıcan salatası": "https://www.themealdb.com/images/media/meals/7b862e1763194846.jpg",
+  "turkish|midye dolma": "https://www.themealdb.com/images/media/meals/urtwux1486983078.jpg",
+  "turkish|humus": "https://www.themealdb.com/images/media/meals/wspuvp1511303478.jpg",
+  "turkish|i̇çli köfte": "https://www.themealdb.com/images/media/meals/xxtsvx1511814083.jpg",
+  "turkish|yaprak sarma": "https://www.themealdb.com/images/media/meals/xqvyqr1511638875.jpg",
+  "turkish|haydari": "https://www.themealdb.com/images/media/meals/1c5oso1614347493.jpg",
+  "turkish|su böreği": "https://www.themealdb.com/images/media/meals/wxswxy1511452625.jpg",
+  "turkish|cacık": "https://www.themealdb.com/images/media/meals/wsu0rc1761848482.jpg",
+  "turkish|i̇skender kebap": "https://www.themealdb.com/images/media/meals/hyarod1565090529.jpg",
+  "turkish|adana kebap": "https://www.themealdb.com/images/media/meals/qysyss1511558054.jpg",
+  "turkish|şiş kebap": "https://www.themealdb.com/images/media/meals/vussxq1511882648.jpg",
+  "turkish|döner kebap": "https://www.themealdb.com/images/media/meals/cj56fs1762340001.jpg",
+  "turkish|manti": "https://www.themealdb.com/images/media/meals/xqqqtu1511637379.jpg",
+  "turkish|hünkar beğendi": "https://www.themealdb.com/images/media/meals/xrptpq1483909204.jpg",
+  "turkish|kuzu tandır": "https://www.themealdb.com/images/media/meals/el64dy1763483009.jpg",
+  "turkish|karnıyarık": "https://www.themealdb.com/images/media/meals/oe8rg51699014028.jpg",
+  "turkish|ali nazik": "https://www.themealdb.com/images/media/meals/178z5o1585514569.jpg",
+  "turkish|balık ekmek": "https://www.themealdb.com/images/media/meals/b66myb1683207208.jpg",
+  "turkish|testi kebabı": "https://www.themealdb.com/images/media/meals/u55lbp1585564013.jpg",
+  "turkish|köfte": "https://www.themealdb.com/images/media/meals/yrstur1511816601.jpg",
+  "turkish|bulgur pilavı": "https://www.themealdb.com/images/media/meals/de83k51763075604.jpg",
+  "turkish|şehriye pilavı": "https://www.themealdb.com/images/media/meals/60o82j1762341177.jpg",
+  "turkish|ezogelin çorbası": "https://www.themealdb.com/images/media/meals/d6o4nu1763362422.jpg",
+  "turkish|piyaz": "https://www.themealdb.com/images/media/meals/rqtxvr1511792990.jpg",
+  "turkish|çoban salatası": "https://www.themealdb.com/images/media/meals/rsqwus1511640214.jpg",
+  "turkish|turşu": "https://www.themealdb.com/images/media/meals/g046bb1663960946.jpg",
+  "turkish|ispanak yemeği": "https://www.themealdb.com/images/media/meals/arzs741766434335.jpg",
+  "turkish|kısır": "https://www.themealdb.com/images/media/meals/1529442316.jpg",
+  "turkish|zeytinyağlı fasulye": "https://www.themealdb.com/images/media/meals/z458v91763817681.jpg",
+  "turkish|simit": "https://www.themealdb.com/images/media/meals/54xzk31760524666.jpg",
+  "moroccan|harira": "https://www.themealdb.com/images/media/meals/zg2b9l1760524940.jpg",
+  "moroccan|briouats": "https://www.themealdb.com/images/media/meals/5fu4ew1760524857.jpg",
+  "moroccan|zaalouk": "https://www.themealdb.com/images/media/meals/1529443236.jpg",
+  "moroccan|taktouka": "https://www.themealdb.com/images/media/meals/vpxyqt1511464175.jpg",
+  "moroccan|pastilla au poulet": "https://www.themealdb.com/images/media/meals/xihiu41762773169.jpg",
+  "moroccan|bessara": "https://www.themealdb.com/images/media/meals/n3xxd91598732796.jpg",
+  "moroccan|bakoula": "https://www.themealdb.com/images/media/meals/e2g2r21764367568.jpg",
+  "moroccan|msemen": "https://www.themealdb.com/images/media/meals/dbazbg1763779999.jpg",
+  "moroccan|sellou": "https://www.themealdb.com/images/media/meals/ryspuw1511786688.jpg",
+  "moroccan|tangia marrakchia": "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
+  "moroccan|rfissa": "https://www.themealdb.com/images/media/meals/kyuxew1763479470.jpg",
+  "moroccan|mechoui": "https://www.themealdb.com/images/media/meals/6s3i3p1763488540.jpg",
+  "moroccan|couscous tfaya": "https://www.themealdb.com/images/media/meals/4k8nzy1763583384.jpg",
+  "moroccan|brochettes": "https://www.themealdb.com/images/media/meals/118oj61763423896.jpg",
+  "moroccan|tanjia khodra": "https://www.themealdb.com/images/media/meals/ittake1763586925.jpg",
+  "moroccan|bastilla bil hout": "https://www.themealdb.com/images/media/meals/hblwvg1763478203.jpg",
+  "moroccan|batbout": "https://www.themealdb.com/images/media/meals/7kb44y1763589084.jpg",
+  "moroccan|salade marocaine": "https://www.themealdb.com/images/media/meals/sstssx1487349585.jpg",
+  "moroccan|loubia": "https://www.themealdb.com/images/media/meals/snmtd61763426568.jpg",
+  "moroccan|matbucha": "https://www.themealdb.com/images/media/meals/qqlwv91763501559.jpg",
+  "moroccan|preserved lemons": "https://www.themealdb.com/images/media/meals/1brbso1763585098.jpg",
+  "moroccan|maakouda": "https://www.themealdb.com/images/media/meals/6g3rso1763486069.jpg",
+  "moroccan|baghrir": "https://www.themealdb.com/images/media/meals/a2ec961763587756.jpg",
+  "moroccan|bissara dip": "https://www.themealdb.com/images/media/meals/yx8j1i1763484612.jpg",
+  "brazilian|pão de queijo": "https://www.themealdb.com/images/media/meals/spswqs1511558697.jpg",
+  "brazilian|bolinho de bacalhau": "https://www.themealdb.com/images/media/meals/sxwquu1511793428.jpg",
+  "brazilian|pastel": "https://www.themealdb.com/images/media/meals/txsupu1511815755.jpg",
+  "brazilian|acarajé": "https://www.themealdb.com/images/media/meals/ytuvwr1503070420.jpg",
+  "brazilian|mandioca frita": "https://www.themealdb.com/images/media/meals/minfsc1763766806.jpg",
+  "brazilian|dadinhos de tapioca": "https://www.themealdb.com/images/media/meals/9c5nlx1763424766.jpg",
+  "brazilian|quibe frito": "https://www.themealdb.com/images/media/meals/l50vz41763422681.jpg",
+  "brazilian|empada": "https://www.themealdb.com/images/media/meals/f3ee3y1763309332.jpg",
+  "brazilian|torresmo": "https://www.themealdb.com/images/media/meals/okl9cm1764371087.jpg",
+  "brazilian|bolinho de feijoada": "https://www.themealdb.com/images/media/meals/va668f1683209318.jpg",
+  "brazilian|vinagrete": "https://www.themealdb.com/images/media/meals/ytpstt1511814614.jpg",
+  "brazilian|picanha": "https://www.themealdb.com/images/media/meals/n1hcou1628770088.jpg",
+  "brazilian|feijoada": "https://www.themealdb.com/images/media/meals/wprvrw1511641295.jpg",
+  "brazilian|churrasco misto": "https://www.themealdb.com/images/media/meals/yypwwq1511304979.jpg",
+  "brazilian|frango com quiabo": "https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg",
+  "brazilian|vatapá": "https://www.themealdb.com/images/media/meals/y4jpgq1560459207.jpg",
+  "brazilian|galeto": "https://www.themealdb.com/images/media/meals/1wj8w31763781990.jpg",
+  "brazilian|bobó de camarão": "https://www.themealdb.com/images/media/meals/ypuxtw1511297463.jpg",
+  "brazilian|costela no bafo": "https://www.themealdb.com/images/media/meals/cr2kyr1763793839.jpg",
+  "brazilian|fraldinha": "https://www.themealdb.com/images/media/meals/xw1ruy1763786501.jpg",
+  "brazilian|peixada": "https://www.themealdb.com/images/media/meals/0p7l6b1763813981.jpg",
+  "brazilian|linguiça grelhada": "https://www.themealdb.com/images/media/meals/smoa3h1762341142.jpg",
+  "brazilian|baião de dois": "https://www.themealdb.com/images/media/meals/3wnyvh1764373818.jpg",
+  "brazilian|escondidinho": "https://www.themealdb.com/images/media/meals/qxutws1486978099.jpg",
+  "brazilian|farofa": "https://www.themealdb.com/images/media/meals/rvxxuy1468312893.jpg",
+  "brazilian|feijão tropeiro": "https://www.themealdb.com/images/media/meals/w8umt11583268117.jpg",
+  "brazilian|couve refogada": "https://www.themealdb.com/images/media/meals/vptwyt1511450962.jpg",
+  "brazilian|vinagrete salsa": "https://www.themealdb.com/images/media/meals/wqurxy1511453156.jpg",
+  "brazilian|pirão": "https://www.themealdb.com/images/media/meals/eo0yfb1763600916.jpg",
+  "brazilian|salada de palmito": "https://www.themealdb.com/images/media/meals/qvrwpt1511181864.jpg",
+  "brazilian|angu": "https://www.themealdb.com/images/media/meals/3hcy191764376285.jpg",
+  "brazilian|molho de pimenta": "https://www.themealdb.com/images/media/meals/z2sw3o1764378271.jpg",
+  "peruvian|ceviche clásico": "https://www.themealdb.com/images/media/meals/8859m71764377470.jpg",
+  "peruvian|tiradito": "https://www.themealdb.com/images/media/meals/mq27gf1764436795.jpg",
+  "peruvian|causa limeña": "https://www.themealdb.com/images/media/meals/zjtfp31764440795.jpg",
+  "peruvian|papa a la huancaína": "https://www.themealdb.com/images/media/meals/p02vq41763754350.jpg",
+  "peruvian|anticuchos": "https://www.themealdb.com/images/media/meals/pk8wtn1763758591.jpg",
+  "peruvian|tequeños": "https://www.themealdb.com/images/media/meals/qqwypw1504642429.jpg",
+  "peruvian|choclo con queso": "https://www.themealdb.com/images/media/meals/7xte3u1763757761.jpg",
+  "peruvian|tamales criollos": "https://www.themealdb.com/images/media/meals/g7jomp1763763994.jpg",
+  "peruvian|solterito": "https://www.themealdb.com/images/media/meals/9r2xrg1763771238.jpg",
+  "peruvian|yuquitas fritas": "https://www.themealdb.com/images/media/meals/f698g91763768731.jpg",
+  "peruvian|ceviche mixto": "https://www.themealdb.com/images/media/meals/4mzt101763761546.jpg",
+  "peruvian|lomo saltado": "https://www.themealdb.com/images/media/meals/4uje7l1763762276.jpg",
+  "peruvian|ají de gallina": "https://www.themealdb.com/images/media/meals/u9l7k81628771647.jpg",
+  "peruvian|seco de cordero": "https://www.themealdb.com/images/media/meals/towo9c1763814590.jpg",
+  "peruvian|pollo a la brasa": "https://www.themealdb.com/images/media/meals/ktsws11761998344.jpg",
+  "peruvian|tacu tacu": "https://www.themealdb.com/images/media/meals/uryqru1511798039.jpg",
+  "peruvian|cau cau": "https://www.themealdb.com/images/media/meals/1525876468.jpg",
+  "peruvian|jalea": "https://www.themealdb.com/images/media/meals/30s7vf1763741844.jpg",
+  "peruvian|rocoto relleno": "https://www.themealdb.com/images/media/meals/x5qz5k1761595900.jpg",
+  "peruvian|chupe de camarones": "https://www.themealdb.com/images/media/meals/72lmpt1764122511.jpg",
+  "peruvian|tallarin saltado": "https://www.themealdb.com/images/media/meals/0umm891763364625.jpg"
 };
 
 // ---------------------------------------------------------------------------
-// 3. Deterministic hash (for consistent images per dish name)
-//    This ensures the same dish always gets the same image without needing
-//    a server or API key.
+// 3. SVG fallback generator for unmapped dishes
 // ---------------------------------------------------------------------------
-
-function simpleHash(str) {
-  let hash = 0;
+function hashCode(str) {
+  let h = 0;
   for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0; // Convert to 32-bit integer
+    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
   }
-  return Math.abs(hash);
+  return Math.abs(h);
 }
 
-// ---------------------------------------------------------------------------
-// 4. Well-known Unsplash photo IDs for common dish types
-//    These are verified, high-quality food photos on Unsplash.
-// ---------------------------------------------------------------------------
-
-const DISH_PHOTO_MAP = {
-  // Italian
-  "bruschetta": "1572695157366-5e585ab2b69f",
-  "caprese salad": "1592417817098-8fd3d9eb14a5",
-  "arancini": "1565299624946-b28f40a0ae38",
-  "spaghetti carbonara": "1612874742237-6526221588e3",
-  "lasagna bolognese": "1574894709920-11b28e7367e3",
-  "osso buco": "1544025162-d76694265947",
-  "risotto ai funghi": "1476124369491-e7addf5db371",
-  "margherita pizza": "1565299624946-b28f40a0ae38",
-  "chicken parmigiana": "1632778149955-e80f8ceca2e8",
-  "polenta": "1476124369491-e7addf5db371",
-  "garlic bread": "1573140401552-3fab0b24306f",
-  "panzanella": "1540189549336-e6e99c3679fe",
-
-  // Chinese
-  "spring rolls": "1563245372-f21724e3856d",
-  "hot and sour soup": "1547592166-23ac45744acd",
-  "dim sum platter": "1563245372-f21724e3856d",
-  "kung pao chicken": "1525755662160-40a4fbc52728",
-  "mapo tofu": "1547592166-23ac45744acd",
-  "peking duck": "1518983498-d5bd36d1a6b3",
-  "char siu pork": "1544025162-d76694265947",
-  "chow mein": "1569718212165-3a8278d5f624",
-  "sweet and sour pork": "1525755662160-40a4fbc52728",
-  "fried rice": "1512058564366-18510be2db87",
-  "stir-fried bok choy": "1540420773420-3366772f4999",
-  "scallion pancakes": "1569718212165-3a8278d5f624",
-
-  // Japanese
-  "edamame": "1540420773420-3366772f4999",
-  "miso soup": "1547592166-23ac45744acd",
-  "gyoza": "1563245372-f21724e3856d",
-  "chicken teriyaki": "1632778149955-e80f8ceca2e8",
-  "tonkotsu ramen": "1569718212165-3a8278d5f624",
-  "sushi platter": "1579871494447-9811cf80d66c",
-  "wagyu steak": "1544025162-d76694265947",
-  "tempura udon": "1569718212165-3a8278d5f624",
-  "katsu curry": "1585937421612-70a008356fbe",
-  "pickled ginger": "1540420773420-3366772f4999",
-  "rice": "1512058564366-18510be2db87",
-  "seaweed salad": "1540420773420-3366772f4999",
-
-  // Indian
-  "samosa": "1601050690597-df0568f70950",
-  "pakora": "1601050690597-df0568f70950",
-  "mulligatawny soup": "1547592166-23ac45744acd",
-  "butter chicken": "1585937421612-70a008356fbe",
-  "lamb biryani": "1563379091339-03b21ab4a4f8",
-  "palak paneer": "1585937421612-70a008356fbe",
-  "tandoori chicken": "1632778149955-e80f8ceca2e8",
-  "chole bhature": "1601050690597-df0568f70950",
-  "rogan josh": "1585937421612-70a008356fbe",
-  "naan": "1573140401552-3fab0b24306f",
-  "raita": "1540420773420-3366772f4999",
-  "aloo gobi": "1585937421612-70a008356fbe",
-
-  // Mexican
-  "guacamole & chips": "1565299585323-38d6b0865b47",
-  "queso fundido": "1565299585323-38d6b0865b47",
-  "elote": "1565299585323-38d6b0865b47",
-  "tacos al pastor": "1565299585323-38d6b0865b47",
-  "chicken mole": "1565299585323-38d6b0865b47",
-  "carnitas": "1544025162-d76694265947",
-  "enchiladas verdes": "1565299585323-38d6b0865b47",
-  "burrito bowl": "1565299585323-38d6b0865b47",
-  "chiles rellenos": "1565299585323-38d6b0865b47",
-  "mexican rice": "1512058564366-18510be2db87",
-  "refried beans": "1565299585323-38d6b0865b47",
-  "esquites": "1565299585323-38d6b0865b47",
-
-  // Thai
-  "tom yum goong": "1547592166-23ac45744acd",
-  "satay skewers": "1555939594-58d7cb561ad1",
-  "thai fish cakes": "1555939594-58d7cb561ad1",
-  "pad thai": "1569718212165-3a8278d5f624",
-  "green curry": "1562565652-a0d8f0c59eb4",
-  "massaman curry": "1585937421612-70a008356fbe",
-  "basil fried rice": "1512058564366-18510be2db87",
-  "pad see ew": "1569718212165-3a8278d5f624",
-  "khao soi": "1569718212165-3a8278d5f624",
-  "papaya salad": "1540420773420-3366772f4999",
-  "sticky rice": "1512058564366-18510be2db87",
-  "thai iced tea": "1544145945-f90425340c7e",
-
-  // French
-  "french onion soup": "1547592166-23ac45744acd",
-  "escargots": "1555939594-58d7cb561ad1",
-  "pate en croute": "1555939594-58d7cb561ad1",
-  "coq au vin": "1544025162-d76694265947",
-  "duck confit": "1544025162-d76694265947",
-  "beef bourguignon": "1544025162-d76694265947",
-  "ratatouille": "1540420773420-3366772f4999",
-  "bouillabaisse": "1547592166-23ac45744acd",
-  "steak frites": "1544025162-d76694265947",
-  "pommes dauphinoise": "1476124369491-e7addf5db371",
-  "haricots verts": "1540420773420-3366772f4999",
-  "salade lyonnaise": "1540189549336-e6e99c3679fe",
-
-  // Korean
-  "kimchi jeon": "1553163147-622ab57be1c7",
-  "tteokbokki": "1553163147-622ab57be1c7",
-  "korean fried chicken": "1632778149955-e80f8ceca2e8",
-  "bibimbap": "1553163147-622ab57be1c7",
-  "bulgogi": "1544025162-d76694265947",
-  "japchae": "1569718212165-3a8278d5f624",
-  "kimchi jjigae": "1547592166-23ac45744acd",
-  "galbi": "1544025162-d76694265947",
-  "sundubu jjigae": "1547592166-23ac45744acd",
-  "kongnamul": "1540420773420-3366772f4999",
-  "kimchi": "1553163147-622ab57be1c7",
-  "japchae noodles": "1569718212165-3a8278d5f624",
-
-  // Vietnamese
-  "fresh spring rolls": "1563245372-f21724e3856d",
-  "banh mi": "1573140401552-3fab0b24306f",
-  "pho": "1582878826629-29b7ad1cdc43",
-  "bun cha": "1569718212165-3a8278d5f624",
-  "com tam": "1512058564366-18510be2db87",
-  "bun bo hue": "1569718212165-3a8278d5f624",
-  "ca kho to": "1518983498-d5bd36d1a6b3",
-  "lemongrass chicken": "1632778149955-e80f8ceca2e8",
-  "vietnamese coffee": "1544145945-f90425340c7e",
-  "pickled vegetables": "1540420773420-3366772f4999",
-  "jasmine rice": "1512058564366-18510be2db87",
-  "morning glory": "1540420773420-3366772f4999",
+const CUISINE_PALETTES = {
+  italian:   ["#8B1A1A","#C0392B","#D4A017","#2E4600","#6B3A2A","#A0522D","#CC5500","#7B3F00"],
+  chinese:   ["#C0392B","#D4A017","#8B0000","#B8860B","#CD853F","#A52A2A","#DC143C","#DAA520"],
+  japanese:  ["#BC002D","#2C3E50","#E8D5B7","#8B4513","#CD5C5C","#F4A460","#D2691E","#556B2F"],
+  indian:    ["#FF6B00","#FFB300","#C62828","#388E3C","#E65100","#F57F17","#BF360C","#827717"],
+  mexican:   ["#1B5E20","#C62828","#F9A825","#E65100","#33691E","#FF6F00","#BF360C","#827717"],
+  thai:      ["#880E4F","#F57F17","#1B5E20","#E65100","#AD1457","#FF6F00","#C62828","#33691E"],
+  french:    ["#1A237E","#B71C1C","#8D6E63","#4A148C","#311B92","#880E4F","#3E2723","#1B5E20"],
+  korean:    ["#B71C1C","#1565C0","#F57F17","#4E342E","#C62828","#0D47A1","#E65100","#3E2723"],
+  vietnamese:["#C62828","#F9A825","#1B5E20","#E65100","#BF360C","#33691E","#827717","#FF6F00"],
+  greek:     ["#0D47A1","#E8E8E8","#1565C0","#1B5E20","#42A5F5","#81C784","#5C6BC0","#26A69A"],
+  spanish:   ["#B71C1C","#F9A825","#E65100","#1B5E20","#C62828","#FF6F00","#BF360C","#33691E"],
+  lebanese:  ["#C62828","#1B5E20","#D7CCC8","#827717","#BF360C","#33691E","#E65100","#F57F17"],
+  ethiopian: ["#1B5E20","#F9A825","#C62828","#33691E","#FF6F00","#827717","#E65100","#BF360C"],
+  turkish:   ["#C62828","#EFEBE9","#E65100","#BF360C","#B71C1C","#827717","#FF6F00","#4E342E"],
+  moroccan:  ["#BF360C","#1B5E20","#F9A825","#E65100","#33691E","#827717","#C62828","#FF6F00"],
+  brazilian: ["#1B5E20","#F9A825","#0D47A1","#33691E","#FFD600","#1565C0","#2E7D32","#F57F17"],
+  peruvian:  ["#C62828","#EFEBE9","#E65100","#1B5E20","#BF360C","#827717","#B71C1C","#33691E"],
+  caribbean: ["#00897B","#FF6F00","#1B5E20","#F9A825","#00695C","#E65100","#2E7D32","#C62828"],
+  german:    ["#212121","#F9A825","#5D4037","#BF360C","#3E2723","#827717","#4E342E","#E65100"],
 };
 
-// ---------------------------------------------------------------------------
-// 5. Public exports — used by components
-// ---------------------------------------------------------------------------
+const TYPE_ACCENTS = {
+  appetizer: ["#FF8A65","#FFB74D","#FFCC80","#FFA726","#FF7043","#FFE0B2"],
+  main:      ["#EF5350","#E53935","#C62828","#D32F2F","#F44336","#B71C1C"],
+  side:      ["#66BB6A","#43A047","#2E7D32","#4CAF50","#388E3C","#81C784"],
+};
 
-/**
- * Get the hero/card image URL for a cuisine.
- * Falls back to a generic food image if the cuisine is unknown.
- *
- * @param {string} cuisineId - e.g. "italian", "japanese"
- * @returns {string} Direct image URL
- */
+function generateDishSvg(dishName, cuisineId, dishType) {
+  const key = cuisineId + "|" + dishName;
+  const h = hashCode(key);
+  const palette = CUISINE_PALETTES[cuisineId] || CUISINE_PALETTES.italian;
+  const accents = TYPE_ACCENTS[dishType] || TYPE_ACCENTS.main;
+  const bg1 = palette[h % palette.length];
+  const bg2 = palette[(h * 7 + 3) % palette.length];
+  const accent = accents[(h * 13 + 5) % accents.length];
+  const angle = h % 360;
+  const cx1 = 30 + (h % 340), cy1 = 20 + ((h * 3) % 260), r1 = 40 + (h % 80);
+  const cx2 = 100 + ((h * 7) % 200), cy2 = 50 + ((h * 11) % 200), r2 = 30 + ((h * 5) % 60);
+  const cx3 = 200 + ((h * 13) % 180), cy3 = 100 + ((h * 17) % 180), r3 = 20 + ((h * 2) % 50);
+  const o1 = (0.06 + (h % 10) / 100).toFixed(2);
+  const o2 = (0.04 + ((h * 3) % 8) / 100).toFixed(2);
+  const o3 = (0.05 + ((h * 7) % 9) / 100).toFixed(2);
+  const plateX = 120 + ((h * 3) % 160), plateY = 80 + ((h * 7) % 140), plateR = 50 + ((h * 2) % 40);
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+<defs><linearGradient id="g" gradientTransform="rotate(${angle},200,150)">
+<stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/>
+</linearGradient></defs>
+<rect width="400" height="300" fill="url(#g)"/>
+<circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${accent}" opacity="${o1}"/>
+<circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${bg1}" opacity="${o2}"/>
+<circle cx="${cx3}" cy="${cy3}" r="${r3}" fill="${accent}" opacity="${o3}"/>
+<ellipse cx="${plateX}" cy="${plateY}" rx="${plateR}" ry="${plateR * 0.7}" fill="white" opacity="0.06"/>
+<ellipse cx="${plateX}" cy="${plateY}" rx="${plateR * 0.8}" ry="${plateR * 0.55}" fill="white" opacity="0.04"/>
+</svg>`;
+  return "data:image/svg+xml," + encodeURIComponent(svg);
+}
+
+// ---------------------------------------------------------------------------
+// 4. Public API
+// ---------------------------------------------------------------------------
 export function getCuisineImageUrl(cuisineId) {
-  return (
-    CUISINE_IMAGES[cuisineId] ||
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80"
-  );
+  return CUISINE_IMAGES[cuisineId] ||
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80";
 }
 
-/**
- * Get an image URL for a specific dish.
- *
- * Resolution order:
- *   1. Check the hand-picked DISH_PHOTO_MAP for a known Unsplash photo ID
- *   2. Fall back to LoremFlickr with dish name + cuisine as keywords
- *      (deterministic via ?lock= so the same dish always shows the same image)
- *
- * @param {string} dishName  - e.g. "Spaghetti Carbonara"
- * @param {string} cuisineId - e.g. "italian"
- * @returns {string} Direct image URL
- */
-export function getDishImageUrl(dishName, cuisineId) {
-  const key = dishName.toLowerCase();
-
-  // 1. Try hand-picked Unsplash photo
-  if (DISH_PHOTO_MAP[key]) {
-    return `https://images.unsplash.com/photo-${DISH_PHOTO_MAP[key]}?w=400&h=300&fit=crop&q=80`;
-  }
-
-  // 2. Fall back to LoremFlickr with keyword search
-  //    The ?lock= parameter ensures deterministic results per dish name.
-  const hash = simpleHash(key);
-  const keywords = encodeURIComponent(
-    `${dishName},${CUISINE_KEYWORDS[cuisineId] || "food"} food`
-  );
-  return `https://loremflickr.com/400/300/${keywords}?lock=${hash}`;
-}
-
-/**
- * Get a dish image URL with the Foodish API (limited categories).
- * Useful for random food images in specific categories.
- *
- * Available categories: biryani, burger, butter-chicken, dessert, dosa,
- * idly, pasta, pizza, rice, samosa
- *
- * @param {string} category - One of the available Foodish categories
- * @returns {string} API endpoint that returns JSON with { image: "url" }
- */
-export function getFoodishApiUrl(category) {
-  const validCategories = [
-    "biryani", "burger", "butter-chicken", "dessert",
-    "dosa", "idly", "pasta", "pizza", "rice", "samosa",
-  ];
-  const cat = validCategories.includes(category) ? category : "pizza";
-  return `https://foodish-api.com/api/images/${cat}`;
-}
-
-/**
- * Fetch a random dish image from the Foodish API.
- * Returns a direct image URL string.
- *
- * @param {string} category - Foodish category name
- * @returns {Promise<string>} Direct image URL
- */
-export async function fetchFoodishImage(category) {
-  try {
-    const res = await fetch(getFoodishApiUrl(category));
-    const data = await res.json();
-    return data.image;
-  } catch {
-    // Fallback to a generic food image
-    return "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&q=80";
-  }
+export function getDishImageUrl(dishName, cuisineId, dishType) {
+  const key = cuisineId + "|" + dishName.toLowerCase();
+  if (DISH_IMAGE_MAP[key]) return DISH_IMAGE_MAP[key];
+  return generateDishSvg(dishName, cuisineId, dishType || "main");
 }

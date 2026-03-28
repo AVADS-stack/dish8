@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <footer className="footer">
@@ -10,25 +12,25 @@ export default function Footer() {
           <div>
             <h4>Explore</h4>
             <ul>
-              <li><a href="/">Browse Cuisines</a></li>
-              <li><a href="/weekly">Weekly Menu</a></li>
-              <li><a href="/plans">Subscription Plans</a></li>
+              <li><Link to="/">Browse Cuisines</Link></li>
+              <li><Link to="/weekly">Weekly Menu</Link></li>
+              <li><Link to="/plans">Subscription Plans</Link></li>
             </ul>
           </div>
           <div>
             <h4>Account</h4>
             <ul>
-              <li><a href="/account">My Account</a></li>
-              <li><a href="/cart">My Cart</a></li>
-              <li><a href="/auth">Sign In</a></li>
+              <li><Link to="/account">My Account</Link></li>
+              <li><Link to="/cart">My Cart</Link></li>
+              <li><Link to="/auth">Sign In</Link></li>
             </ul>
           </div>
           <div>
             <h4>Legal</h4>
             <ul>
-              <li><a href="/terms">Terms &amp; Conditions</a></li>
-              <li><a href="/refund-policy">Refund Policy</a></li>
-              <li>$9.99 per meal with subscription</li>
+              <li><Link to="/terms">Terms &amp; Conditions</Link></li>
+              <li><Link to="/refund-policy">Refund Policy</Link></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
               <li>Delivery included, taxes extra</li>
             </ul>
           </div>
@@ -36,9 +38,11 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>&copy; {new Date().getFullYear()} Dish8 LLC. All Rights Reserved.</p>
           <div className="footer-legal-links">
-            <a href="/terms">Terms &amp; Conditions</a>
+            <Link to="/terms">Terms &amp; Conditions</Link>
             <span className="footer-sep">|</span>
-            <a href="/refund-policy">Refund Policy</a>
+            <Link to="/refund-policy">Refund Policy</Link>
+            <span className="footer-sep">|</span>
+            <Link to="/privacy">Privacy Policy</Link>
           </div>
         </div>
       </div>

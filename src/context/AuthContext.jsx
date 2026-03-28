@@ -4,13 +4,13 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("ff_user");
+    const saved = localStorage.getItem("d8_user");
     return saved ? JSON.parse(saved) : null;
   });
 
   useEffect(() => {
-    if (user) localStorage.setItem("ff_user", JSON.stringify(user));
-    else localStorage.removeItem("ff_user");
+    if (user) localStorage.setItem("d8_user", JSON.stringify(user));
+    else localStorage.removeItem("d8_user");
   }, [user]);
 
   const signup = (name, email, password, address) => {
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
   };
 
   const login = (email) => {
-    const saved = localStorage.getItem("ff_user");
+    const saved = localStorage.getItem("d8_user");
     if (saved) {
       const u = JSON.parse(saved);
       if (u.email === email) {

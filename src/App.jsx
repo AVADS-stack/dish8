@@ -10,10 +10,14 @@ import Account from "./pages/Account.jsx";
 import WeeklyMenu from "./pages/WeeklyMenu.jsx";
 import RefundPolicy from "./pages/RefundPolicy.jsx";
 import Terms from "./pages/Terms.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import NotFound from "./pages/NotFound.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 export default function App() {
   return (
     <div className="app">
+      <ScrollToTop />
       <Navbar />
       <main className="main-content">
         <Routes>
@@ -26,6 +30,8 @@ export default function App() {
           <Route path="/weekly" element={<WeeklyMenu />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

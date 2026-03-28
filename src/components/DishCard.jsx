@@ -59,7 +59,7 @@ export default function DishCard({
     }
   };
 
-  const imageUrl = getDishImageUrl(dish.name, cuisineId);
+  const imageUrl = getDishImageUrl(dish.name, cuisineId, dish.type);
 
   return (
     <div className={`dish-card ${isInCart ? "in-cart" : ""} ${compact ? "compact" : ""}`}>
