@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { cuisines } from "../data/cuisines.js";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import SEO from "../components/SEO.jsx";
 import DishCard from "../components/DishCard.jsx";
 
 export default function WeeklyMenu() {
@@ -18,6 +19,11 @@ export default function WeeklyMenu() {
 
   return (
     <div className="weekly-page">
+      <SEO
+        title="Weekly Menu Builder"
+        description="Build your weekly meal plan from 19+ world cuisines. Select 2 appetizers, a main course, and a side for each day."
+        path="/weekly"
+      />
       <div className="weekly-header">
         <h1>Build Your Weekly Menu</h1>
         <p>

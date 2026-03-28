@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSubscription, PLANS } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import SEO from "../components/SEO.jsx";
 
 export default function Plans() {
   const { subscription, subscribe, cancelSubscription, activePlan } =
@@ -19,6 +20,11 @@ export default function Plans() {
 
   return (
     <div className="plans-page">
+      <SEO
+        title="Subscription Plans"
+        description="Subscribe to Dish8 from $99.99/mo. Lunch or dinner plans with 19+ cuisines. Every meal just $9.99 — delivery included."
+        path="/plans"
+      />
       <div className="plans-header">
         <h1>Choose Your Plan</h1>
         <p>

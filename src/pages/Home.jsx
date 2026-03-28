@@ -2,12 +2,18 @@ import { genreGroups } from "../data/cuisines.js";
 import GenreRow from "../components/GenreRow.jsx";
 import { Link } from "react-router-dom";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import SEO, { organizationSchema, foodServiceSchema } from "../components/SEO.jsx";
 
 export default function Home() {
   const { activePlan } = useSubscription();
 
   return (
     <div className="home-page">
+      <SEO
+        path="/"
+        description="Explore 19+ world cuisines Netflix-style. Pick your weekly meals — 2 appetizers, a main course, and a side — delivered fresh for just $9.99/meal."
+        jsonLd={[organizationSchema, foodServiceSchema]}
+      />
       {/* Hero */}
       <section className="hero">
         <div className="hero-bg" />

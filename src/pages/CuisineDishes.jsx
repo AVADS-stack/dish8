@@ -5,6 +5,7 @@ import { getCuisineImageUrl } from "../data/images.js";
 import DishCard from "../components/DishCard.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import SEO from "../components/SEO.jsx";
 
 export default function CuisineDishes() {
   const { cuisineId } = useParams();
@@ -33,6 +34,12 @@ export default function CuisineDishes() {
 
   return (
     <div className="cuisine-dishes-page">
+      <SEO
+        title={`${cuisine.name} Cuisine`}
+        description={`Browse ${cuisine.dishes.length}+ ${cuisine.name} dishes. ${cuisine.description} Order appetizers, mains, and sides for $9.99/meal.`}
+        path={`/cuisine/${cuisineId}`}
+        image={getCuisineImageUrl(cuisineId)}
+      />
       {/* Header */}
       <div className="cuisine-header">
         <Link to="/" className="back-link">← Back to Cuisines</Link>
