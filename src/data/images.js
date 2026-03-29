@@ -722,7 +722,9 @@ const DISH_IMAGE_MAP = {
 };
 
 // ---------------------------------------------------------------------------
-// 3. SVG fallback generator for unmapped dishes
+// 3. AI-generated image fallback for unmapped dishes (Pollinations.ai)
+//    Free, no API key, generates food photos from dish name via URL.
+//    Each unique prompt+seed = unique deterministic image, cached by CDN.
 // ---------------------------------------------------------------------------
 function hashCode(str) {
   let h = 0;
@@ -732,65 +734,12 @@ function hashCode(str) {
   return Math.abs(h);
 }
 
-const CUISINE_PALETTES = {
-  italian:   ["#8B1A1A","#C0392B","#D4A017","#2E4600","#6B3A2A","#A0522D","#CC5500","#7B3F00"],
-  chinese:   ["#C0392B","#D4A017","#8B0000","#B8860B","#CD853F","#A52A2A","#DC143C","#DAA520"],
-  japanese:  ["#BC002D","#2C3E50","#E8D5B7","#8B4513","#CD5C5C","#F4A460","#D2691E","#556B2F"],
-  indian:    ["#FF6B00","#FFB300","#C62828","#388E3C","#E65100","#F57F17","#BF360C","#827717"],
-  mexican:   ["#1B5E20","#C62828","#F9A825","#E65100","#33691E","#FF6F00","#BF360C","#827717"],
-  thai:      ["#880E4F","#F57F17","#1B5E20","#E65100","#AD1457","#FF6F00","#C62828","#33691E"],
-  french:    ["#1A237E","#B71C1C","#8D6E63","#4A148C","#311B92","#880E4F","#3E2723","#1B5E20"],
-  korean:    ["#B71C1C","#1565C0","#F57F17","#4E342E","#C62828","#0D47A1","#E65100","#3E2723"],
-  vietnamese:["#C62828","#F9A825","#1B5E20","#E65100","#BF360C","#33691E","#827717","#FF6F00"],
-  greek:     ["#0D47A1","#E8E8E8","#1565C0","#1B5E20","#42A5F5","#81C784","#5C6BC0","#26A69A"],
-  spanish:   ["#B71C1C","#F9A825","#E65100","#1B5E20","#C62828","#FF6F00","#BF360C","#33691E"],
-  lebanese:  ["#C62828","#1B5E20","#D7CCC8","#827717","#BF360C","#33691E","#E65100","#F57F17"],
-  ethiopian: ["#1B5E20","#F9A825","#C62828","#33691E","#FF6F00","#827717","#E65100","#BF360C"],
-  turkish:   ["#C62828","#EFEBE9","#E65100","#BF360C","#B71C1C","#827717","#FF6F00","#4E342E"],
-  moroccan:  ["#BF360C","#1B5E20","#F9A825","#E65100","#33691E","#827717","#C62828","#FF6F00"],
-  brazilian: ["#1B5E20","#F9A825","#0D47A1","#33691E","#FFD600","#1565C0","#2E7D32","#F57F17"],
-  peruvian:  ["#C62828","#EFEBE9","#E65100","#1B5E20","#BF360C","#827717","#B71C1C","#33691E"],
-  caribbean: ["#00897B","#FF6F00","#1B5E20","#F9A825","#00695C","#E65100","#2E7D32","#C62828"],
-  german:    ["#212121","#F9A825","#5D4037","#BF360C","#3E2723","#827717","#4E342E","#E65100"],
-  american:  ["#B71C1C","#0D47A1","#F5F5F5","#BF360C","#1565C0","#E65100","#1A237E","#D32F2F"],
-  pizza:     ["#C62828","#F9A825","#E65100","#BF360C","#FF6F00","#D32F2F","#8B0000","#CC5500"],
-};
-
-const TYPE_ACCENTS = {
-  appetizer: ["#FF8A65","#FFB74D","#FFCC80","#FFA726","#FF7043","#FFE0B2"],
-  main:      ["#EF5350","#E53935","#C62828","#D32F2F","#F44336","#B71C1C"],
-  side:      ["#66BB6A","#43A047","#2E7D32","#4CAF50","#388E3C","#81C784"],
-};
-
-function generateDishSvg(dishName, cuisineId, dishType) {
-  const key = cuisineId + "|" + dishName;
-  const h = hashCode(key);
-  const palette = CUISINE_PALETTES[cuisineId] || CUISINE_PALETTES.italian;
-  const accents = TYPE_ACCENTS[dishType] || TYPE_ACCENTS.main;
-  const bg1 = palette[h % palette.length];
-  const bg2 = palette[(h * 7 + 3) % palette.length];
-  const accent = accents[(h * 13 + 5) % accents.length];
-  const angle = h % 360;
-  const cx1 = 30 + (h % 340), cy1 = 20 + ((h * 3) % 260), r1 = 40 + (h % 80);
-  const cx2 = 100 + ((h * 7) % 200), cy2 = 50 + ((h * 11) % 200), r2 = 30 + ((h * 5) % 60);
-  const cx3 = 200 + ((h * 13) % 180), cy3 = 100 + ((h * 17) % 180), r3 = 20 + ((h * 2) % 50);
-  const o1 = (0.06 + (h % 10) / 100).toFixed(2);
-  const o2 = (0.04 + ((h * 3) % 8) / 100).toFixed(2);
-  const o3 = (0.05 + ((h * 7) % 9) / 100).toFixed(2);
-  const plateX = 120 + ((h * 3) % 160), plateY = 80 + ((h * 7) % 140), plateR = 50 + ((h * 2) % 40);
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
-<defs><linearGradient id="g" gradientTransform="rotate(${angle},200,150)">
-<stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/>
-</linearGradient></defs>
-<rect width="400" height="300" fill="url(#g)"/>
-<circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${accent}" opacity="${o1}"/>
-<circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${bg1}" opacity="${o2}"/>
-<circle cx="${cx3}" cy="${cy3}" r="${r3}" fill="${accent}" opacity="${o3}"/>
-<ellipse cx="${plateX}" cy="${plateY}" rx="${plateR}" ry="${plateR * 0.7}" fill="white" opacity="0.06"/>
-<ellipse cx="${plateX}" cy="${plateY}" rx="${plateR * 0.8}" ry="${plateR * 0.55}" fill="white" opacity="0.04"/>
-</svg>`;
-  return "data:image/svg+xml," + encodeURIComponent(svg);
+function generateAiImageUrl(dishName, cuisineId) {
+  const seed = hashCode(cuisineId + "|" + dishName);
+  const prompt = encodeURIComponent(
+    `${dishName}, ${cuisineId} cuisine, professional food photography, on a plate, restaurant style, dark moody background, top down angle, high quality`
+  );
+  return `https://image.pollinations.ai/prompt/${prompt}?width=400&height=300&seed=${seed}&nologo=true&model=flux`;
 }
 
 // ---------------------------------------------------------------------------
@@ -804,5 +753,5 @@ export function getCuisineImageUrl(cuisineId) {
 export function getDishImageUrl(dishName, cuisineId, dishType) {
   const key = cuisineId + "|" + dishName.toLowerCase();
   if (DISH_IMAGE_MAP[key]) return DISH_IMAGE_MAP[key];
-  return generateDishSvg(dishName, cuisineId, dishType || "main");
+  return generateAiImageUrl(dishName, cuisineId);
 }
