@@ -24,8 +24,11 @@ export default function Cart() {
 
   const cartByDay = getCartByDay();
   const summary = getCartSummary();
-  const tax = +(summary.subtotal * TAX_RATE).toFixed(2);
-  const total = +(summary.subtotal + tax).toFixed(2);
+  const subscriptionPrice = activePlan ? activePlan.price : 0;
+  const mealSubtotal = summary.subtotal;
+  const combinedSubtotal = mealSubtotal + subscriptionPrice;
+  const tax = +(combinedSubtotal * TAX_RATE).toFixed(2);
+  const total = +(combinedSubtotal + tax).toFixed(2);
   const isEmpty = Object.keys(cartByDay).length === 0;
 
   const handleCheckout = async () => {
@@ -210,15 +213,21 @@ export default function Cart() {
                   </p>
                 </div>
               )}
+              {activePlan && (
+                <div className="summary-line subscription-line">
+                  <span>{activePlan.name} Subscription</span>
+                  <span>${subscriptionPrice.toFixed(2)}/mo</span>
+                </div>
+              )}
               <div className="summary-line">
                 <span>Complete meals</span>
                 <span>{summary.totalMeals}</span>
               </div>
               <div className="summary-line">
                 <span>
-                  Subtotal ({summary.totalMeals} × ${summary.mealCost})
+                  Meals ({summary.totalMeals} × ${summary.mealCost})
                 </span>
-                <span>${summary.subtotal.toFixed(2)}</span>
+                <span>${mealSubtotal.toFixed(2)}</span>
               </div>
               <div className="summary-line">
                 <span>Delivery</span>
@@ -233,8 +242,8 @@ export default function Cart() {
                 <span>${total.toFixed(2)}</span>
               </div>
               <p className="summary-note">
-                * State taxes are extra and calculated at checkout. Delivery
-                within 24 hours of meal time.
+                * Subscription billed monthly. Meal charges per order.
+                State taxes estimated at 8%. Delivery within 24 hours of meal time.
               </p>
               <button
                 className="btn btn-primary btn-block btn-lg"
