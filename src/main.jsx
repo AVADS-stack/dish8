@@ -6,7 +6,10 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { SubscriptionProvider } from "./context/SubscriptionContext.jsx";
+import { initNative } from "./lib/native.js";
 import "./index.css";
+
+initNative();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

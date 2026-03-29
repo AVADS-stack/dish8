@@ -2323,6 +2323,36 @@ button {
   }
 }
 
+/* ── Native App (Capacitor) ──────────────────────────────────── */
+/* Safe areas for iPhone notch / Android cutout */
+.main-content {
+  padding-top: calc(70px + env(safe-area-inset-top, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.navbar {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.meal-summary-bar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.footer {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Keyboard open — hide footer, adjust layout */
+body.keyboard-open .footer,
+body.keyboard-open .meal-summary-bar {
+  display: none;
+}
+
+/* Prevent overscroll bounce on iOS */
+html {
+  overscroll-behavior: none;
+}
+
 /* ── 404 / Error Page ───────────────────────────────────────── */
 .error-page {
   text-align: center;
