@@ -2,9 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { isStripeConfigured, getStripe } from "../lib/stripe.js";
 import { useState } from "react";
 
 const TAX_RATE = 0.08;
+const MEAL_PRICE_ID = import.meta.env.VITE_STRIPE_PRICE_MEAL || "";
 const COURSE_LABELS = {
   appetizer1: "Appetizer 1",
   appetizer2: "Appetizer 2",
@@ -19,6 +21,7 @@ export default function Cart() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const cartByDay = getCartByDay();
   const summary = getCartSummary();
@@ -26,7 +29,7 @@ export default function Cart() {
   const total = +(summary.subtotal + tax).toFixed(2);
   const isEmpty = Object.keys(cartByDay).length === 0;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!user) {
       navigate("/auth");
       return;
@@ -35,9 +38,59 @@ export default function Cart() {
       navigate("/plans");
       return;
     }
+    if (summary.totalMeals === 0) return;
+
+    // If Stripe is configured, redirect to Stripe Checkout for meal payment
+    if (isStripeConfigured() && MEAL_PRICE_ID) {
+      setProcessing(true);
+      try {
+        const stripe = await getStripe();
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [{ price: MEAL_PRICE_ID, quantity: summary.totalMeals }],
+          mode: "payment",
+          customerEmail: user.email,
+          successUrl: window.location.origin + "/cart?order=success",
+          cancelUrl: window.location.origin + "/cart",
+        });
+        if (error) throw error;
+      } catch (err) {
+        console.error("Stripe error:", err);
+        setProcessing(false);
+      }
+      return;
+    }
+
+    // Demo mode (no Stripe) — place order directly
     setOrderPlaced(true);
     clearCart();
   };
+
+  // Handle return from Stripe success
+  if (!orderPlaced && typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("order") === "success") {
+      clearCart();
+      window.history.replaceState({}, "", "/cart");
+      return (
+        <div className="cart-page">
+          <div className="order-success">
+            <div className="success-icon">🎉</div>
+            <h1>Payment Successful — Order Placed!</h1>
+            <p>
+              Your meals have been ordered and paid for. They will be delivered within 24 hours
+              of each scheduled meal time.
+            </p>
+            <p className="success-note">
+              A confirmation has been sent to {user?.email}.
+            </p>
+            <Link to="/" className="btn btn-primary btn-lg">
+              Browse More Cuisines
+            </Link>
+          </div>
+        </div>
+      );
+    }
+  }
 
   if (orderPlaced) {
     return (
@@ -199,15 +252,17 @@ export default function Cart() {
               <button
                 className="btn btn-primary btn-block btn-lg"
                 disabled={
-                  summary.totalMeals === 0 || !activePlan || !user
+                  summary.totalMeals === 0 || !activePlan || !user || processing
                 }
                 onClick={handleCheckout}
               >
-                {!user
+                {processing
+                  ? "Redirecting to payment..."
+                  : !user
                   ? "Sign In to Checkout"
                   : !activePlan
                   ? "Subscribe to Checkout"
-                  : `Place Order — $${total.toFixed(2)}`}
+                  : `Pay & Place Order — $${total.toFixed(2)}`}
               </button>
             </div>
           </div>
