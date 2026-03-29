@@ -23,6 +23,8 @@
   <url><loc>https://dish8.vercel.app/cuisine/peruvian</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://dish8.vercel.app/cuisine/caribbean</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://dish8.vercel.app/cuisine/german</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://dish8.vercel.app/cuisine/american</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://dish8.vercel.app/cuisine/pizza</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://dish8.vercel.app/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://dish8.vercel.app/refund-policy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://dish8.vercel.app/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>

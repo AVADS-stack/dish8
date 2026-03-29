@@ -29,6 +29,8 @@ export const CUISINE_IMAGES = {
   peruvian:  "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&h=500&fit=crop&q=80",
   caribbean: "https://images.unsplash.com/photo-1532465614-6cc8d45f647f?w=800&h=500&fit=crop&q=80",
   german:    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&q=80",
+  american:  "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&h=500&fit=crop&q=80",
+  pizza:     "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=500&fit=crop&q=80",
 };
 
 // ---------------------------------------------------------------------------
