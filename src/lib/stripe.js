@@ -1,39 +1,54 @@
-import { loadStripe } from "@stripe/stripe-js";
+/**
+ * Stripe integration for Dish8
+ *
+ * Uses Stripe Payment Links for subscriptions (no server needed).
+ * Uses Stripe Checkout (client-side) for per-meal payments.
+ *
+ * Payment Links are created in Stripe Dashboard → Payment Links.
+ * Each link is a URL that redirects the customer to a Stripe-hosted checkout page.
+ */
 
 const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
 
-let stripePromise = null;
-
-export function getStripe() {
-  if (!stripePromise && stripeKey) {
-    stripePromise = loadStripe(stripeKey);
-  }
-  return stripePromise;
-}
-
 export const isStripeConfigured = () => !!stripeKey;
 
+// Stripe Payment Link URLs for subscriptions (created in Stripe Dashboard)
+const PAYMENT_LINKS = {
+  lunch: import.meta.env.VITE_STRIPE_LINK_LUNCH || "",
+  dinner: import.meta.env.VITE_STRIPE_LINK_DINNER || "",
+  both: import.meta.env.VITE_STRIPE_LINK_BOTH || "",
+  meal: import.meta.env.VITE_STRIPE_LINK_MEAL || "",
+};
+
 /**
- * Redirect to Stripe Checkout for subscription.
- * In production, this should call your backend to create a Checkout Session.
- * For now, it creates a client-side redirect to Stripe's hosted checkout.
- *
- * IMPORTANT: For real payments, you MUST create checkout sessions server-side
- * (via Supabase Edge Function or API route) to prevent price manipulation.
+ * Redirect to Stripe Payment Link for subscription.
+ * Appends customer email and success URL as query params.
  */
-export async function redirectToCheckout({ priceId, userEmail, successUrl, cancelUrl }) {
-  const stripe = await getStripe();
-  if (!stripe) {
-    throw new Error("Stripe is not configured. Add VITE_STRIPE_PUBLISHABLE_KEY to your environment.");
-  }
+export function redirectToSubscription(planId, userEmail) {
+  const link = PAYMENT_LINKS[planId];
+  if (!link) return false;
 
-  const { error } = await stripe.redirectToCheckout({
-    lineItems: [{ price: priceId, quantity: 1 }],
-    mode: "subscription",
-    customerEmail: userEmail,
-    successUrl: successUrl || window.location.origin + "/account?subscribed=true",
-    cancelUrl: cancelUrl || window.location.origin + "/plans",
-  });
+  const successUrl = encodeURIComponent(
+    window.location.origin + "/weekly?subscribed=" + planId
+  );
+  const url = `${link}?prefilled_email=${encodeURIComponent(userEmail)}&success_url=${successUrl}`;
+  window.location.href = url;
+  return true;
+}
 
-  if (error) throw error;
+/**
+ * Redirect to Stripe Payment Link for meal order.
+ * Quantity is passed as a query param.
+ */
+export function redirectToMealPayment(totalMeals, userEmail) {
+  const link = PAYMENT_LINKS.meal;
+  if (!link) return false;
+
+  const successUrl = encodeURIComponent(
+    window.location.origin + "/cart?order=success"
+  );
+  const cancelUrl = encodeURIComponent(window.location.origin + "/cart");
+  const url = `${link}?prefilled_email=${encodeURIComponent(userEmail)}&quantity=${totalMeals}&success_url=${successUrl}&cancel_url=${cancelUrl}`;
+  window.location.href = url;
+  return true;
 }

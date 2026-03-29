@@ -33,7 +33,9 @@
       "Bash(npx plugins:*)",
       "Bash(cat ~/.claude/plugins/*/manifest.json)",
       "Bash(find ~/.claude/plugins -path *vercel*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }

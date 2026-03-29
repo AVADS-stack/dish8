@@ -2,11 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
-import { isStripeConfigured, getStripe } from "../lib/stripe.js";
+import { isStripeConfigured, redirectToMealPayment } from "../lib/stripe.js";
 import { useState } from "react";
 
 const TAX_RATE = 0.08;
-const MEAL_PRICE_ID = import.meta.env.VITE_STRIPE_PRICE_MEAL || "";
 const COURSE_LABELS = {
   appetizer1: "Appetizer 1",
   appetizer2: "Appetizer 2",
@@ -40,24 +39,12 @@ export default function Cart() {
     }
     if (summary.totalMeals === 0) return;
 
-    // If Stripe is configured, redirect to Stripe Checkout for meal payment
-    if (isStripeConfigured() && MEAL_PRICE_ID) {
+    // If Stripe is configured, redirect to Stripe Payment Link for meal payment
+    if (isStripeConfigured()) {
       setProcessing(true);
-      try {
-        const stripe = await getStripe();
-        const { error } = await stripe.redirectToCheckout({
-          lineItems: [{ price: MEAL_PRICE_ID, quantity: summary.totalMeals }],
-          mode: "payment",
-          customerEmail: user.email,
-          successUrl: window.location.origin + "/cart?order=success",
-          cancelUrl: window.location.origin + "/cart",
-        });
-        if (error) throw error;
-      } catch (err) {
-        console.error("Stripe error:", err);
-        setProcessing(false);
-      }
-      return;
+      const redirected = redirectToMealPayment(summary.totalMeals, user.email);
+      if (redirected) return;
+      setProcessing(false);
     }
 
     // Demo mode (no Stripe) — place order directly
