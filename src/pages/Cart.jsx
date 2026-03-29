@@ -4,6 +4,7 @@ import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isStripeConfigured, redirectToMealPayment } from "../lib/stripe.js";
 import { sendOrderConfirmation } from "../lib/email.js";
+import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import { useState } from "react";
 
 const TAX_RATE = 0.08;
@@ -22,6 +23,9 @@ export default function Cart() {
   const navigate = useNavigate();
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [unitNumber, setUnitNumber] = useState("");
+  const [addressError, setAddressError] = useState("");
 
   const cartByDay = getCartByDay();
   const summary = getCartSummary();
@@ -42,6 +46,12 @@ export default function Cart() {
       return;
     }
     if (summary.totalMeals === 0) return;
+
+    if (!deliveryAddress.trim()) {
+      setAddressError("Please enter a delivery address.");
+      return;
+    }
+    setAddressError("");
 
     // If Stripe is configured, redirect to Stripe Payment Link for meal payment
     if (isStripeConfigured()) {
@@ -79,11 +89,16 @@ export default function Cart() {
     setOrderPlaced(true);
     clearCart();
 
+    const fullAddress = unitNumber.trim()
+      ? `${deliveryAddress}, ${unitNumber.trim()}`
+      : deliveryAddress;
+
     // Send confirmation email (async, don't block)
     sendOrderConfirmation({
       userEmail: user.email,
       userName: user.name || "Customer",
       planName: activePlan?.name || "No Plan",
+      deliveryAddress: fullAddress,
       items,
       totalMeals: summary.totalMeals,
       mealSubtotal,
@@ -234,6 +249,32 @@ export default function Cart() {
 
           {/* Order summary */}
           <div className="cart-summary">
+            {/* Delivery address */}
+            <div className="summary-card delivery-card">
+              <h3>Delivery Address</h3>
+              <div className="form-group">
+                <label>Street Address</label>
+                <AddressAutocomplete
+                  value={deliveryAddress}
+                  onChange={setDeliveryAddress}
+                  placeholder="Start typing your address..."
+                />
+              </div>
+              <div className="form-group">
+                <label>Apt / Suite / Unit (optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Apt 4B, Unit 201, Suite 300"
+                  value={unitNumber}
+                  onChange={(e) => setUnitNumber(e.target.value)}
+                  className="unit-input"
+                />
+              </div>
+              {addressError && (
+                <p className="address-error">{addressError}</p>
+              )}
+            </div>
+
             <div className="summary-card">
               <h3>Order Summary</h3>
               {!activePlan && (

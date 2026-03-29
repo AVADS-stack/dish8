@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import SEO from "../components/SEO.jsx";
-import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 
 export default function Auth() {
   const [mode, setMode] = useState("login");
@@ -16,7 +15,6 @@ export default function Auth() {
     name: "",
     email: "",
     password: "",
-    address: "",
   });
 
   useEffect(() => {
@@ -32,7 +30,7 @@ export default function Auth() {
 
     try {
       if (mode === "signup") {
-        if (!form.name || !form.email || !form.password || !form.address) {
+        if (!form.name || !form.email || !form.password) {
           setError("All fields are required.");
           setSubmitting(false);
           return;
@@ -42,7 +40,7 @@ export default function Auth() {
           setSubmitting(false);
           return;
         }
-        const result = await signup(form.name, form.email, form.password, form.address);
+        const result = await signup(form.name, form.email, form.password);
         if (result?.needsConfirmation) {
           setSuccess(`Account created! Check your email (${result.email}) to confirm, then sign in.`);
           setMode("login");
@@ -126,16 +124,6 @@ export default function Auth() {
               required
             />
           </div>
-          {mode === "signup" && (
-            <div className="form-group">
-              <label>Delivery Address</label>
-              <AddressAutocomplete
-                value={form.address}
-                onChange={(val) => updateField("address", val)}
-                placeholder="Start typing your delivery address..."
-              />
-            </div>
-          )}
           <button
             type="submit"
             className="btn btn-primary btn-block btn-lg"

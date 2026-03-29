@@ -19,6 +19,7 @@ interface OrderRequest {
   userEmail: string;
   userName: string;
   planName: string;
+  deliveryAddress: string;
   items: OrderItem[];
   totalMeals: number;
   mealSubtotal: number;
@@ -83,6 +84,14 @@ serve(async (req) => {
           <p style="color:#999;margin:0 0 24px;font-size:15px;">
             Hi ${order.userName}, your order has been placed successfully.
           </p>
+
+          <!-- Delivery address -->
+          ${order.deliveryAddress ? `
+          <div style="background:#222;border-radius:8px;padding:16px;margin-bottom:16px;">
+            <h3 style="color:#fff;margin:0 0 8px;font-size:16px;">Delivery Address</h3>
+            <p style="color:#ccc;margin:0;font-size:14px;">${order.deliveryAddress}</p>
+          </div>
+          ` : ""}
 
           <!-- Order summary -->
           <div style="background:#222;border-radius:8px;padding:16px;margin-bottom:24px;">

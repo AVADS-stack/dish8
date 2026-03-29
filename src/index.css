@@ -1415,6 +1415,60 @@ button {
   font-weight: 600;
 }
 
+/* ── Delivery address card in cart ───────────────────────────── */
+.delivery-card {
+  margin-bottom: 1rem;
+}
+
+.delivery-card .form-group {
+  margin-bottom: 1rem;
+}
+
+.delivery-card label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.delivery-card input,
+.delivery-card textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg-elevated);
+  color: var(--text-bright);
+  font-size: 0.95rem;
+  font-family: var(--font);
+  transition: border-color var(--transition);
+}
+
+.delivery-card input:focus,
+.delivery-card textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.unit-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg-elevated);
+  color: var(--text-bright);
+  font-size: 0.95rem;
+  font-family: var(--font);
+}
+
+.address-error {
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
 .subscription-line {
   background: rgba(229, 9, 20, 0.06);
   margin: -0.25rem -0.5rem 0.25rem;

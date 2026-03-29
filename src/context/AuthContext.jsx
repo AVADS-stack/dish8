@@ -81,7 +81,7 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  const signup = async (name, email, password, address) => {
+  const signup = async (name, email, password) => {
     if (isSupabaseConfigured()) {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -99,7 +99,6 @@ export function AuthProvider({ children }) {
         await supabase.from("profiles").upsert({
           id: data.user.id,
           name,
-          address,
           email,
         });
         const profile = await loadProfile(data.user);
@@ -113,7 +112,6 @@ export function AuthProvider({ children }) {
         await supabase.from("profiles").upsert({
           id: data.user.id,
           name,
-          address,
           email,
         }).then(() => {}, () => {});
         // Return a marker so the UI can show "check your email"
@@ -126,7 +124,6 @@ export function AuthProvider({ children }) {
         id: crypto.randomUUID(),
         name,
         email,
-        address,
         createdAt: new Date().toISOString(),
       };
       setUser(newUser);
