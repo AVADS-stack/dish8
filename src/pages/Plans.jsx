@@ -15,9 +15,10 @@ const STRIPE_PRICE_IDS = {
 export default function Plans() {
   const { subscription, subscribe, cancelSubscription, activePlan } =
     useSubscription();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [processingPlan, setProcessingPlan] = useState(null);
+  const [error, setError] = useState("");
 
   const handleSubscribe = async (planId) => {
     if (!user) {
@@ -25,16 +26,19 @@ export default function Plans() {
       return;
     }
 
-    // If Stripe is configured, redirect to Stripe Checkout for payment
-    if (isStripeConfigured() && STRIPE_PRICE_IDS[planId]) {
+    setError("");
+
+    // If Stripe is configured AND we have a price ID for this plan, use Stripe
+    const priceId = STRIPE_PRICE_IDS[planId];
+    if (isStripeConfigured() && priceId) {
       setProcessingPlan(planId);
       try {
         await redirectToCheckout({
-          priceId: STRIPE_PRICE_IDS[planId],
+          priceId,
           userEmail: user.email,
         });
       } catch (err) {
-        console.error("Stripe error:", err);
+        setError(err.message || "Payment failed. Please try again.");
         setProcessingPlan(null);
       }
       return;
@@ -52,8 +56,14 @@ export default function Plans() {
         description="Subscribe to Dish8 from $99.99/mo. Lunch or dinner plans with 19+ cuisines. Every meal just $9.99 — delivery included."
         path="/plans"
       />
+      {error && (
+        <div className="auth-error" role="alert" style={{ maxWidth: 600, margin: "0 auto 1.5rem" }}>
+          {error}
+        </div>
+      )}
       <div className="plans-header">
         <h1>Choose Your Plan</h1>
+        {loading && <p style={{ color: "#999" }}>Loading your account...</p>}
         <p>
           Unlimited access to 19+ world cuisines. Every meal just{" "}
           <strong>$9.99</strong> — delivery included, taxes extra.
@@ -109,10 +119,14 @@ export default function Plans() {
                     className="btn btn-primary btn-block"
                     style={{ background: plan.color }}
                     onClick={() => handleSubscribe(plan.id)}
-                    disabled={isProcessing}
+                    disabled={isProcessing || loading}
                   >
-                    {isProcessing
+                    {loading
+                      ? "Loading..."
+                      : isProcessing
                       ? "Redirecting to payment..."
+                      : !user
+                      ? "Sign In to Subscribe"
                       : subscription
                       ? "Switch Plan"
                       : "Get Started"}

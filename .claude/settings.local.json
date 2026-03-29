@@ -32,7 +32,8 @@
       "Bash(node --input-type=module -e \":*)",
       "Bash(npx plugins:*)",
       "Bash(cat ~/.claude/plugins/*/manifest.json)",
-      "Bash(find ~/.claude/plugins -path *vercel*)"
+      "Bash(find ~/.claude/plugins -path *vercel*)",
+      "Bash(git add:*)"
     ]
   }
 }
