@@ -686,7 +686,39 @@ const DISH_IMAGE_MAP = {
   "peruvian|jalea": "https://www.themealdb.com/images/media/meals/30s7vf1763741844.jpg",
   "peruvian|rocoto relleno": "https://www.themealdb.com/images/media/meals/x5qz5k1761595900.jpg",
   "peruvian|chupe de camarones": "https://www.themealdb.com/images/media/meals/72lmpt1764122511.jpg",
-  "peruvian|tallarin saltado": "https://www.themealdb.com/images/media/meals/0umm891763364625.jpg"
+  "peruvian|tallarin saltado": "https://www.themealdb.com/images/media/meals/0umm891763364625.jpg",
+  "american|classic bacon cheeseburger": "https://foodish-api.com/images/burger/burger1.jpg",
+  "american|bbq bacon burger": "https://foodish-api.com/images/burger/burger2.jpg",
+  "american|mushroom swiss burger": "https://foodish-api.com/images/burger/burger3.jpg",
+  "american|turkey burger": "https://foodish-api.com/images/burger/burger4.jpg",
+  "american|veggie burger": "https://foodish-api.com/images/burger/burger5.jpg",
+  "american|patty melt": "https://foodish-api.com/images/burger/burger6.jpg",
+  "american|mac and cheese": "https://foodish-api.com/images/pasta/pasta1.jpg",
+  "american|bacon mac and cheese": "https://foodish-api.com/images/pasta/pasta2.jpg",
+  "american|buffalo chicken mac and cheese": "https://foodish-api.com/images/pasta/pasta3.jpg",
+  "american|fish and chips": "https://foodish-api.com/images/rice/rice1.jpg",
+  "pizza|pepperoni pizza": "https://foodish-api.com/images/pizza/pizza1.jpg",
+  "pizza|margherita pizza": "https://foodish-api.com/images/pizza/pizza2.jpg",
+  "pizza|bbq chicken pizza": "https://foodish-api.com/images/pizza/pizza3.jpg",
+  "pizza|ultimate pepperoni pizza": "https://foodish-api.com/images/pizza/pizza4.jpg",
+  "pizza|meatzza pizza": "https://foodish-api.com/images/pizza/pizza5.jpg",
+  "pizza|extravaganzza pizza": "https://foodish-api.com/images/pizza/pizza6.jpg",
+  "pizza|pacific veggie pizza": "https://foodish-api.com/images/pizza/pizza7.jpg",
+  "pizza|philly cheese steak pizza": "https://foodish-api.com/images/pizza/pizza8.jpg",
+  "pizza|buffalo chicken pizza": "https://foodish-api.com/images/pizza/pizza9.jpg",
+  "pizza|spinach and feta pizza": "https://foodish-api.com/images/pizza/pizza10.jpg",
+  "pizza|hawaiian pizza": "https://foodish-api.com/images/pizza/pizza11.jpg",
+  "pizza|deluxe pizza": "https://foodish-api.com/images/pizza/pizza12.jpg",
+  "pizza|wisconsin 6 cheese pizza": "https://foodish-api.com/images/pizza/pizza13.jpg",
+  "pizza|memphis bbq chicken pizza": "https://foodish-api.com/images/pizza/pizza14.jpg",
+  "pizza|chicken taco pizza": "https://foodish-api.com/images/pizza/pizza15.jpg",
+  "pizza|chicken alfredo pasta": "https://foodish-api.com/images/pasta/pasta4.jpg",
+  "pizza|italian sausage marinara pasta": "https://foodish-api.com/images/pasta/pasta5.jpg",
+  "pizza|chicken carbonara pasta": "https://foodish-api.com/images/pasta/pasta6.jpg",
+  "pizza|cinnamon bread twists": "https://foodish-api.com/images/dessert/dessert1.jpg",
+  "pizza|chocolate lava crunch cakes": "https://foodish-api.com/images/dessert/dessert2.jpg",
+  "pizza|cinnastix": "https://foodish-api.com/images/dessert/dessert3.jpg",
+  "pizza|baked apple crumble": "https://foodish-api.com/images/dessert/dessert4.jpg"
 };
 
 // ---------------------------------------------------------------------------
@@ -720,6 +752,8 @@ const CUISINE_PALETTES = {
   peruvian:  ["#C62828","#EFEBE9","#E65100","#1B5E20","#BF360C","#827717","#B71C1C","#33691E"],
   caribbean: ["#00897B","#FF6F00","#1B5E20","#F9A825","#00695C","#E65100","#2E7D32","#C62828"],
   german:    ["#212121","#F9A825","#5D4037","#BF360C","#3E2723","#827717","#4E342E","#E65100"],
+  american:  ["#B71C1C","#0D47A1","#F5F5F5","#BF360C","#1565C0","#E65100","#1A237E","#D32F2F"],
+  pizza:     ["#C62828","#F9A825","#E65100","#BF360C","#FF6F00","#D32F2F","#8B0000","#CC5500"],
 };
 
 const TYPE_ACCENTS = {
