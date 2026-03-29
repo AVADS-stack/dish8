@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isStripeConfigured, redirectToMealPayment } from "../lib/stripe.js";
+import { sendOrderConfirmation } from "../lib/email.js";
 import { useState } from "react";
 
 const TAX_RATE = 0.08;
@@ -50,9 +51,46 @@ export default function Cart() {
       setProcessing(false);
     }
 
-    // Demo mode (no Stripe) — place order directly
+    // Place order and send confirmation email
+    await placeOrderAndNotify();
+  };
+
+  const placeOrderAndNotify = async () => {
+    // Build order items from cart before clearing
+    const items = [];
+    DAYS.forEach((day) => {
+      ["lunch", "dinner"].forEach((mealTime) => {
+        if (isMealComplete(day, mealTime)) {
+          const meal = getCartByDay()[day]?.[mealTime];
+          if (meal) {
+            items.push({
+              day,
+              mealTime,
+              appetizer1: meal.appetizer1?.name || "",
+              appetizer2: meal.appetizer2?.name || "",
+              main: meal.main?.name || "",
+              side: meal.side?.name || "",
+            });
+          }
+        }
+      });
+    });
+
     setOrderPlaced(true);
     clearCart();
+
+    // Send confirmation email (async, don't block)
+    sendOrderConfirmation({
+      userEmail: user.email,
+      userName: user.name || "Customer",
+      planName: activePlan?.name || "No Plan",
+      items,
+      totalMeals: summary.totalMeals,
+      mealSubtotal,
+      subscriptionPrice,
+      tax: parseFloat(tax),
+      total: parseFloat(total),
+    });
   };
 
   // Handle return from Stripe success
