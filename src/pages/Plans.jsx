@@ -1,19 +1,46 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSubscription, PLANS } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { isStripeConfigured, redirectToCheckout } from "../lib/stripe.js";
 import SEO from "../components/SEO.jsx";
+
+// Map plan IDs to Stripe Price IDs (set these in Stripe Dashboard → Products)
+const STRIPE_PRICE_IDS = {
+  lunch: import.meta.env.VITE_STRIPE_PRICE_LUNCH || "",
+  dinner: import.meta.env.VITE_STRIPE_PRICE_DINNER || "",
+  both: import.meta.env.VITE_STRIPE_PRICE_BOTH || "",
+};
 
 export default function Plans() {
   const { subscription, subscribe, cancelSubscription, activePlan } =
     useSubscription();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [processingPlan, setProcessingPlan] = useState(null);
 
-  const handleSubscribe = (planId) => {
+  const handleSubscribe = async (planId) => {
     if (!user) {
       navigate("/auth");
       return;
     }
+
+    // If Stripe is configured, redirect to Stripe Checkout for payment
+    if (isStripeConfigured() && STRIPE_PRICE_IDS[planId]) {
+      setProcessingPlan(planId);
+      try {
+        await redirectToCheckout({
+          priceId: STRIPE_PRICE_IDS[planId],
+          userEmail: user.email,
+        });
+      } catch (err) {
+        console.error("Stripe error:", err);
+        setProcessingPlan(null);
+      }
+      return;
+    }
+
+    // Fallback: activate subscription without payment (demo mode)
     subscribe(planId);
     navigate("/weekly");
   };
@@ -36,6 +63,7 @@ export default function Plans() {
       <div className="plans-grid">
         {PLANS.map((plan) => {
           const isActive = activePlan?.id === plan.id;
+          const isProcessing = processingPlan === plan.id;
           return (
             <div
               key={plan.id}
@@ -81,8 +109,13 @@ export default function Plans() {
                     className="btn btn-primary btn-block"
                     style={{ background: plan.color }}
                     onClick={() => handleSubscribe(plan.id)}
+                    disabled={isProcessing}
                   >
-                    {subscription ? "Switch Plan" : "Get Started"}
+                    {isProcessing
+                      ? "Redirecting to payment..."
+                      : subscription
+                      ? "Switch Plan"
+                      : "Get Started"}
                   </button>
                 )}
               </div>

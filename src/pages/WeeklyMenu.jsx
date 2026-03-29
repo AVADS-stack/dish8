@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { cuisines } from "../data/cuisines.js";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import SEO from "../components/SEO.jsx";
 import DishCard from "../components/DishCard.jsx";
 
 export default function WeeklyMenu() {
   const { DAYS } = useCart();
   const { activePlan } = useSubscription();
+  const { user } = useAuth();
   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
   const [selectedMealTime, setSelectedMealTime] = useState("lunch");
   const [selectedCuisine, setSelectedCuisine] = useState("italian");
@@ -30,11 +32,15 @@ export default function WeeklyMenu() {
           Select a day, choose your meal time, pick a cuisine, then add 2
           appetizers, a main course, and a side dish.
         </p>
-        {!activePlan && (
+        {!user ? (
+          <Link to="/auth" className="btn btn-primary">
+            Sign in to get started
+          </Link>
+        ) : !activePlan ? (
           <Link to="/plans" className="btn btn-primary">
             Subscribe first — from $99.99/mo
           </Link>
-        )}
+        ) : null}
       </div>
 
       {/* Day tabs */}

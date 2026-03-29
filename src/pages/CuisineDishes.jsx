@@ -5,6 +5,7 @@ import { getCuisineImageUrl } from "../data/images.js";
 import DishCard from "../components/DishCard.jsx";
 import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import SEO from "../components/SEO.jsx";
 
 export default function CuisineDishes() {
@@ -12,6 +13,7 @@ export default function CuisineDishes() {
   const cuisine = cuisines[cuisineId];
   const { DAYS } = useCart();
   const { activePlan } = useSubscription();
+  const { user } = useAuth();
   const [selectedDay, setSelectedDay] = useState(DAYS[0]);
   const [selectedMealTime, setSelectedMealTime] = useState("lunch");
   const [filter, setFilter] = useState("all");
@@ -107,18 +109,31 @@ export default function CuisineDishes() {
         Each meal = 2 Appetizers + 1 Main Course + 1 Side Dish — $9.99/meal
       </div>
 
-      {/* Dishes Grid */}
-      <div className="dishes-grid">
-        {filteredDishes.map((dish) => (
-          <DishCard
-            key={dish.name}
-            dish={dish}
-            cuisineId={cuisineId}
-            selectedDay={selectedDay}
-            selectedMealTime={selectedMealTime}
-          />
-        ))}
-      </div>
+      {/* Gate: require account + subscription */}
+      {!user ? (
+        <div className="gate-banner">
+          <p>Sign in to start building your meal.</p>
+          <Link to="/auth" className="btn btn-primary">Sign In / Sign Up</Link>
+        </div>
+      ) : !activePlan ? (
+        <div className="gate-banner">
+          <p>Subscribe to start adding dishes to your meals.</p>
+          <Link to="/plans" className="btn btn-primary">View Subscription Plans</Link>
+        </div>
+      ) : (
+        /* Dishes Grid */
+        <div className="dishes-grid">
+          {filteredDishes.map((dish) => (
+            <DishCard
+              key={dish.name}
+              dish={dish}
+              cuisineId={cuisineId}
+              selectedDay={selectedDay}
+              selectedMealTime={selectedMealTime}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Selection summary for current day */}
       <MealSummaryBar day={selectedDay} mealTime={selectedMealTime} />

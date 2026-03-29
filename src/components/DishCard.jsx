@@ -74,7 +74,6 @@ export default function DishCard({
         <h4 className="dish-name">{dish.name}</h4>
         {!compact && <p className="dish-desc">{dish.description}</p>}
         <div className="dish-actions">
-          <span className="dish-price">$9.99/meal</span>
           <button
             className={`btn-cart-toggle ${isInCart ? "remove" : "add"}`}
             onClick={handleToggle}

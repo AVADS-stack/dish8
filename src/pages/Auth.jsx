@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import SEO from "../components/SEO.jsx";
+import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 
 export default function Auth() {
   const [mode, setMode] = useState("login");
   const { signup, login, user, loading } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
@@ -40,7 +42,13 @@ export default function Auth() {
           setSubmitting(false);
           return;
         }
-        await signup(form.name, form.email, form.password, form.address);
+        const result = await signup(form.name, form.email, form.password, form.address);
+        if (result?.needsConfirmation) {
+          setSuccess(`Account created! Check your email (${result.email}) to confirm, then sign in.`);
+          setMode("login");
+          setSubmitting(false);
+          return;
+        }
         navigate("/plans");
       } else {
         if (!form.email || !form.password) {
@@ -81,6 +89,7 @@ export default function Auth() {
             : "Join Dish8 — every user needs an account to order"}
         </p>
 
+        {success && <div className="auth-success" role="status">{success}</div>}
         {error && <div className="auth-error" role="alert">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -120,12 +129,10 @@ export default function Auth() {
           {mode === "signup" && (
             <div className="form-group">
               <label>Delivery Address</label>
-              <textarea
-                placeholder="Your delivery address"
+              <AddressAutocomplete
                 value={form.address}
-                onChange={(e) => updateField("address", e.target.value)}
-                rows={2}
-                required
+                onChange={(val) => updateField("address", val)}
+                placeholder="Start typing your delivery address..."
               />
             </div>
           )}
