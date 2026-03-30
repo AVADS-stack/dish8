@@ -137,6 +137,14 @@ export default function Plans() {
             </p>
           </div>
           <div className="faq-item">
+            <h3>Order Cancellation</h3>
+            <p>
+              You may cancel any individual meal order within 24 hours of
+              placing it for a full refund of the $9.99 per-meal charge.
+              Cancellations after 24 hours are not eligible for a refund.
+            </p>
+          </div>
+          <div className="faq-item">
             <h3>Flexible Ordering</h3>
             <p>
               Order for just one day, an entire week, or the full month. You
