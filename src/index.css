@@ -1,5 +1,5 @@
 /* ============================================================
-   Dish8 — Netflix-inspired food ordering UI
+   Dish8 — Food ordering UI
    CSS Grid + Flexbox responsive design
    ============================================================ */
 
@@ -457,7 +457,7 @@ button {
   color: var(--text-bright);
 }
 
-/* ── Genre Row (Netflix horizontal scroll) ──────────────────── */
+/* ── Genre Row (horizontal scroll) ──────────────────────────── */
 .genre-row {
   margin-bottom: 2.5rem;
 }

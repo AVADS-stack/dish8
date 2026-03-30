@@ -11,7 +11,7 @@ export default function Home() {
     <div className="home-page">
       <SEO
         path="/"
-        description="Explore 19+ world cuisines Netflix-style. Pick your weekly meals — 2 appetizers, a main course, and a side — delivered fresh for just $9.99/meal."
+        description="Explore 21+ world cuisines. Pick your weekly meals — 2 appetizers, a main course, and a side — delivered fresh for just $9.99/meal."
         jsonLd={[organizationSchema, foodServiceSchema]}
       />
       {/* Hero */}
@@ -55,7 +55,7 @@ export default function Home() {
           <div className="step-card">
             <div className="step-number">2</div>
             <h3>Browse & Pick</h3>
-            <p>Explore cuisines like Netflix genres. Select 2 appetizers, a main course, and a side for each meal.</p>
+            <p>Explore world cuisines by genre. Select 2 appetizers, a main course, and a side for each meal.</p>
           </div>
           <div className="step-card">
             <div className="step-number">3</div>
