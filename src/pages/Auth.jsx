@@ -47,7 +47,7 @@ export default function Auth() {
           setSubmitting(false);
           return;
         }
-        navigate("/");
+        navigate("/account");
       } else {
         if (!form.email || !form.password) {
           setError("Email and password are required.");
@@ -60,7 +60,7 @@ export default function Auth() {
           setSubmitting(false);
           return;
         }
-        navigate("/");
+        navigate("/account");
       }
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
