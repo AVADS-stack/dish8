@@ -718,32 +718,153 @@ const DISH_IMAGE_MAP = {
   "pizza|cinnamon bread twists": "https://foodish-api.com/images/dessert/dessert1.jpg",
   "pizza|chocolate lava crunch cakes": "https://foodish-api.com/images/dessert/dessert2.jpg",
   "pizza|cinnastix": "https://foodish-api.com/images/dessert/dessert3.jpg",
-  "pizza|baked apple crumble": "https://foodish-api.com/images/dessert/dessert4.jpg"
+  "pizza|baked apple crumble": "https://foodish-api.com/images/dessert/dessert4.jpg",
+  "peruvian|tamal verde": "/images/dishes/peruvian-tamal-verde.jpg",
+  "caribbean|stamp and go": "/images/dishes/caribbean-stamp-and-go.jpg",
+  "caribbean|callaloo and crab": "/images/dishes/caribbean-callaloo-and-crab.jpg",
+  "caribbean|colombo de poulet": "/images/dishes/caribbean-colombo-de-poulet.jpg",
+  "caribbean|cou-cou": "/images/dishes/caribbean-cou-cou.jpg",
+  "caribbean|macaroni pie": "/images/dishes/caribbean-macaroni-pie.jpg",
+  "german|himmel und erde": "/images/dishes/german-himmel-und-erde.jpg",
+  "american|crispy onion rings": "/images/dishes/american-crispy-onion-rings.jpg",
+  "american|mozzarella sticks": "/images/dishes/american-mozzarella-sticks.jpg",
+  "american|loaded potato skins": "/images/dishes/american-loaded-potato-skins.jpg",
+  "american|buffalo wings": "/images/dishes/american-buffalo-wings.jpg",
+  "american|spinach artichoke dip": "/images/dishes/american-spinach-artichoke-dip.jpg",
+  "american|fried calamari": "/images/dishes/american-fried-calamari.jpg",
+  "american|honey bbq wings": "/images/dishes/american-honey-bbq-wings.jpg",
+  "american|chicken quesadilla": "/images/dishes/american-chicken-quesadilla.jpg",
+  "american|nashville hot chicken tenders": "/images/dishes/american-nashville-hot-chicken-tenders.jpg",
+  "american|teriyaki wings": "/images/dishes/american-teriyaki-wings.jpg",
+  "american|lemon pepper wings": "/images/dishes/american-lemon-pepper-wings.jpg",
+  "american|shrimp cocktail": "/images/dishes/american-shrimp-cocktail.jpg",
+  "american|garlic parmesan wings": "/images/dishes/american-garlic-parmesan-wings.jpg",
+  "american|soft pretzel sticks": "/images/dishes/american-soft-pretzel-sticks.jpg",
+  "american|classic club sandwich": "/images/dishes/american-classic-club-sandwich.jpg",
+  "american|blt sandwich": "/images/dishes/american-blt-sandwich.jpg",
+  "american|reuben sandwich": "/images/dishes/american-reuben-sandwich.jpg",
+  "american|southwestern egg rolls": "/images/dishes/american-southwestern-egg-rolls.jpg",
+  "american|french dip": "/images/dishes/american-french-dip.jpg",
+  "american|pulled pork sandwich": "/images/dishes/american-pulled-pork-sandwich.jpg",
+  "american|grilled cheese with tomato soup": "/images/dishes/american-grilled-cheese-with-tomato-soup.jpg",
+  "american|cubano sandwich": "/images/dishes/american-cubano-sandwich.jpg",
+  "american|shrimp po'boy": "/images/dishes/american-shrimp-po-boy.jpg",
+  "american|cobb salad": "/images/dishes/american-cobb-salad.jpg",
+  "peruvian|papa amarilla": "/images/dishes/peruvian-papa-amarilla.jpg",
+  "peruvian|parihuela": "/images/dishes/peruvian-parihuela.jpg",
+  "peruvian|cancha serrana": "/images/dishes/peruvian-cancha-serrana.jpg",
+  "peruvian|ocopa": "/images/dishes/peruvian-ocopa.jpg",
+  "peruvian|zarza de cebolla": "/images/dishes/peruvian-zarza-de-cebolla.jpg",
+  "peruvian|choclo desgranado": "/images/dishes/peruvian-choclo-desgranado.jpg",
+  "peruvian|sarsa": "/images/dishes/peruvian-sarsa.jpg",
+  "caribbean|plantain chips": "/images/dishes/caribbean-plantain-chips.jpg",
+  "peruvian|yuca sancochada": "/images/dishes/peruvian-yuca-sancochada.jpg",
+  "caribbean|pholourie": "/images/dishes/caribbean-pholourie.jpg",
+  "caribbean|sorrel drink": "/images/dishes/caribbean-sorrel-drink.jpg",
+  "caribbean|accras de morue": "/images/dishes/caribbean-accras-de-morue.jpg",
+  "caribbean|griot": "/images/dishes/caribbean-griot.jpg",
+  "caribbean|fried plantains": "/images/dishes/caribbean-fried-plantains.jpg",
+  "caribbean|doubles": "/images/dishes/caribbean-doubles.jpg",
+  "caribbean|pikliz": "/images/dishes/caribbean-pikliz.jpg",
+  "caribbean|bammy": "/images/dishes/caribbean-bammy.jpg",
+  "caribbean|coleslaw": "/images/dishes/caribbean-coleslaw.jpg",
+  "german|brezeln": "/images/dishes/german-brezeln.jpg",
+  "caribbean|provision": "/images/dishes/caribbean-provision.jpg",
+  "caribbean|mango chutney": "/images/dishes/caribbean-mango-chutney.jpg",
+  "german|leberknödelsuppe": "/images/dishes/german-leberkn-delsuppe.jpg",
+  "german|obatzda": "/images/dishes/german-obatzda.jpg",
+  "german|wurstsalat": "/images/dishes/german-wurstsalat.jpg",
+  "german|matjesfilet": "/images/dishes/german-matjesfilet.jpg",
+  "german|griebenschmalz": "/images/dishes/german-griebenschmalz.jpg",
+  "german|reibekuchen": "/images/dishes/german-reibekuchen.jpg",
+  "german|schweinshaxe": "/images/dishes/german-schweinshaxe.jpg",
+  "german|sülze": "/images/dishes/german-s-lze.jpg",
+  "german|spargel cremesuppe": "/images/dishes/german-spargel-cremesuppe.jpg",
+  "german|wiener schnitzel": "/images/dishes/german-wiener-schnitzel.jpg",
+  "german|sauerbraten": "/images/dishes/german-sauerbraten.jpg",
+  "german|bratwurst": "/images/dishes/german-bratwurst.jpg",
+  "german|eisbein": "/images/dishes/german-eisbein.jpg",
+  "german|jägerschnitzel": "/images/dishes/german-j-gerschnitzel.jpg",
+  "german|rinderroulade": "/images/dishes/german-rinderroulade.jpg",
+  "german|labskaus": "/images/dishes/german-labskaus.jpg",
+  "german|königsberger klopse": "/images/dishes/german-k-nigsberger-klopse.jpg",
+  "german|kassler": "/images/dishes/german-kassler.jpg",
+  "german|forelle müllerin": "/images/dishes/german-forelle-m-llerin.jpg",
+  "german|weiswurst": "/images/dishes/german-weiswurst.jpg",
+  "german|kartoffelsalat": "/images/dishes/german-kartoffelsalat.jpg",
+  "german|käsespätzle": "/images/dishes/german-k-sesp-tzle.jpg",
+  "german|rotkohl": "/images/dishes/german-rotkohl.jpg",
+  "german|spätzle": "/images/dishes/german-sp-tzle.jpg",
+  "german|bratkartoffeln": "/images/dishes/german-bratkartoffeln.jpg",
+  "german|knödel": "/images/dishes/german-kn-del.jpg",
+  "german|gurkensalat": "/images/dishes/german-gurkensalat.jpg",
+  "american|jalapeño poppers": "/images/dishes/american-jalape-o-poppers.jpg",
+  "german|schwarzbrot": "/images/dishes/german-schwarzbrot.jpg",
+  "german|semmelknödel": "/images/dishes/german-semmelkn-del.jpg",
+  "american|fried pickles": "/images/dishes/american-fried-pickles.jpg",
+  "american|loaded nachos": "/images/dishes/american-loaded-nachos.jpg",
+  "american|boneless wings": "/images/dishes/american-boneless-wings.jpg",
+  "american|monte cristo": "/images/dishes/american-monte-cristo.jpg",
+  "american|bruschetta crostini": "/images/dishes/american-bruschetta-crostini.jpg",
+  "american|philly cheesesteak": "/images/dishes/american-philly-cheesesteak.jpg",
+  "american|southwest chicken salad": "/images/dishes/american-southwest-chicken-salad.jpg",
+  "american|caesar salad": "/images/dishes/american-caesar-salad.jpg",
+  "american|wedge salad": "/images/dishes/american-wedge-salad.jpg",
+  "american|chef salad": "/images/dishes/american-chef-salad.jpg",
+  "american|asian chicken salad": "/images/dishes/american-asian-chicken-salad.jpg",
+  "american|chopped salad": "/images/dishes/american-chopped-salad.jpg",
+  "american|new york strip steak": "/images/dishes/american-new-york-strip-steak.jpg",
+  "american|spinach salad": "/images/dishes/american-spinach-salad.jpg",
+  "american|waldorf salad": "/images/dishes/american-waldorf-salad.jpg",
+  "american|classic meatloaf": "/images/dishes/american-classic-meatloaf.jpg",
+  "american|southern fried chicken": "/images/dishes/american-southern-fried-chicken.jpg",
+  "american|baby back ribs": "/images/dishes/american-baby-back-ribs.jpg",
+  "american|grilled salmon": "/images/dishes/american-grilled-salmon.jpg",
+  "american|pot roast": "/images/dishes/american-pot-roast.jpg",
+  "american|chicken fried steak": "/images/dishes/american-chicken-fried-steak.jpg",
+  "american|chicken pot pie": "/images/dishes/american-chicken-pot-pie.jpg",
+  "american|shrimp and grits": "/images/dishes/american-shrimp-and-grits.jpg",
+  "american|ribeye steak": "/images/dishes/american-ribeye-steak.jpg",
+  "american|french fries": "/images/dishes/american-french-fries.jpg",
+  "american|country fried pork chops": "/images/dishes/american-country-fried-pork-chops.jpg",
+  "american|sweet potato fries": "/images/dishes/american-sweet-potato-fries.jpg",
+  "american|cornbread": "/images/dishes/american-cornbread.jpg",
+  "american|coleslaw": "/images/dishes/american-coleslaw.jpg",
+  "american|baked beans": "/images/dishes/american-baked-beans.jpg",
+  "american|mashed potatoes and gravy": "/images/dishes/american-mashed-potatoes-and-gravy.jpg",
+  "american|loaded baked potato": "/images/dishes/american-loaded-baked-potato.jpg",
+  "american|creamed spinach": "/images/dishes/american-creamed-spinach.jpg",
+  "american|green bean casserole": "/images/dishes/american-green-bean-casserole.jpg",
+  "american|hush puppies": "/images/dishes/american-hush-puppies.jpg",
+  "american|macaroni salad": "/images/dishes/american-macaroni-salad.jpg",
+  "american|fried okra": "/images/dishes/american-fried-okra.jpg",
+  "american|steamed broccoli": "/images/dishes/american-steamed-broccoli.jpg",
+  "american|potato salad": "/images/dishes/american-potato-salad.jpg",
+  "pizza|stuffed cheesy bread": "/images/dishes/pizza-stuffed-cheesy-bread.jpg",
+  "pizza|cheesy bread": "/images/dishes/pizza-cheesy-bread.jpg",
+  "pizza|garlic bread twists": "/images/dishes/pizza-garlic-bread-twists.jpg",
+  "pizza|spinach and feta stuffed bread": "/images/dishes/pizza-spinach-and-feta-stuffed-bread.jpg",
+  "pizza|parmesan bread bites": "/images/dishes/pizza-parmesan-bread-bites.jpg",
+  "pizza|bacon jalapeño stuffed bread": "/images/dishes/pizza-bacon-jalape-o-stuffed-bread.jpg",
+  "pizza|bbq wings": "/images/dishes/pizza-bbq-wings.jpg",
+  "pizza|boneless chicken bites": "/images/dishes/pizza-boneless-chicken-bites.jpg",
+  "pizza|hot buffalo wings": "/images/dishes/pizza-hot-buffalo-wings.jpg",
+  "pizza|honey bbq wings": "/images/dishes/pizza-honey-bbq-wings.jpg",
+  "pizza|sweet mango habanero wings": "/images/dishes/pizza-sweet-mango-habanero-wings.jpg",
+  "pizza|loaded tots": "/images/dishes/pizza-loaded-tots.jpg",
+  "pizza|philly cheese steak sub": "/images/dishes/pizza-philly-cheese-steak-sub.jpg",
+  "pizza|chicken bacon ranch sub": "/images/dishes/pizza-chicken-bacon-ranch-sub.jpg",
+  "pizza|italian sub": "/images/dishes/pizza-italian-sub.jpg",
+  "pizza|chicken caesar salad": "/images/dishes/pizza-chicken-caesar-salad.jpg",
+  "pizza|garden salad": "/images/dishes/pizza-garden-salad.jpg",
+  "pizza|caesar side salad": "/images/dishes/pizza-caesar-side-salad.jpg",
+  "pizza|ranch dipping sauce": "/images/dishes/pizza-ranch-dipping-sauce.jpg",
+  "pizza|marinara dipping sauce": "/images/dishes/pizza-marinara-dipping-sauce.jpg",
+  "pizza|garlic dipping cups": "/images/dishes/pizza-garlic-dipping-cups.jpg"
 };
 
 // ---------------------------------------------------------------------------
-// 3. AI-generated image fallback for unmapped dishes (Pollinations.ai)
-//    Free, no API key, generates food photos from dish name via URL.
-//    Each unique prompt+seed = unique deterministic image, cached by CDN.
-// ---------------------------------------------------------------------------
-function hashCode(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = Math.imul(31, h) + str.charCodeAt(i) | 0;
-  }
-  return Math.abs(h);
-}
-
-function generateAiImageUrl(dishName, cuisineId) {
-  const seed = hashCode(cuisineId + "|" + dishName);
-  const prompt = encodeURIComponent(
-    `${dishName}, ${cuisineId} cuisine, professional food photography, on a plate, restaurant style, dark moody background, top down angle, high quality`
-  );
-  return `https://image.pollinations.ai/prompt/${prompt}?width=400&height=300&seed=${seed}&nologo=true&model=flux`;
-}
-
-// ---------------------------------------------------------------------------
-// 4. Public API
+// 3. Public API
 // ---------------------------------------------------------------------------
 export function getCuisineImageUrl(cuisineId) {
   return CUISINE_IMAGES[cuisineId] ||
@@ -753,5 +874,7 @@ export function getCuisineImageUrl(cuisineId) {
 export function getDishImageUrl(dishName, cuisineId, dishType) {
   const key = cuisineId + "|" + dishName.toLowerCase();
   if (DISH_IMAGE_MAP[key]) return DISH_IMAGE_MAP[key];
-  return generateAiImageUrl(dishName, cuisineId);
+  // Fallback: generic food image from cuisine hero
+  return CUISINE_IMAGES[cuisineId] ||
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&q=80";
 }
