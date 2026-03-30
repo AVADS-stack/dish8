@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { supabase, isSupabaseConfigured } from "../lib/supabase.js";
+import { notifySignup } from "../lib/notifications.js";
 
 const AuthContext = createContext(null);
 
@@ -22,7 +23,6 @@ export function AuthProvider({ children }) {
         address: data?.address || "",
       };
     } catch {
-      // Profile might not exist yet (race condition on signup)
       return {
         id: authUser.id,
         email: authUser.email,
@@ -42,7 +42,6 @@ export function AuthProvider({ children }) {
 
     let mounted = true;
 
-    // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!mounted) return;
       if (session?.user) {
@@ -52,7 +51,6 @@ export function AuthProvider({ children }) {
       if (mounted) setLoading(false);
     });
 
-    // Listen for auth state changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
@@ -73,7 +71,6 @@ export function AuthProvider({ children }) {
     };
   }, [loadProfile]);
 
-  // Sync localStorage fallback
   useEffect(() => {
     if (!isSupabaseConfigured()) {
       if (user) localStorage.setItem("d8_user", JSON.stringify(user));
@@ -91,34 +88,41 @@ export function AuthProvider({ children }) {
           emailRedirectTo: window.location.origin + "/auth",
         },
       });
+
       if (error) throw error;
 
-      // If email confirmation is disabled, user is signed in immediately
-      if (data.session) {
-        // Create/update profile
-        await supabase.from("profiles").upsert({
-          id: data.user.id,
-          name,
-          email,
-        });
-        const profile = await loadProfile(data.user);
-        setUser(profile);
-        return data.user;
+      if (!data.user) {
+        throw new Error("Signup failed. Please try again.");
       }
 
-      // Email confirmation enabled — user must confirm first
-      if (data.user && !data.session) {
-        // Try to create profile anyway (trigger may have done it)
+      // Check if this is a fake signup (user already exists, Supabase returns
+      // an empty user with no identities to prevent email enumeration)
+      if (data.user.identities && data.user.identities.length === 0) {
+        throw new Error("An account with this email already exists. Please sign in instead.");
+      }
+
+      // If session exists, user is signed in immediately (no email confirmation)
+      if (data.session) {
         await supabase.from("profiles").upsert({
           id: data.user.id,
           name,
           email,
         }).then(() => {}, () => {});
-        // Return a marker so the UI can show "check your email"
-        return { needsConfirmation: true, email };
+        const profile = await loadProfile(data.user);
+        setUser(profile);
+        notifySignup(name, email);
+        return data.user;
       }
 
-      return data.user;
+      // No session = email confirmation required
+      notifySignup(name, email);
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        name,
+        email,
+      }).then(() => {}, () => {});
+
+      return { needsConfirmation: true, email };
     } else {
       const newUser = {
         id: crypto.randomUUID(),
@@ -137,8 +141,18 @@ export function AuthProvider({ children }) {
         email,
         password,
       });
-      if (error) throw error;
-      // onAuthStateChange will handle setting the user
+
+      if (error) {
+        // Provide clearer error messages
+        if (error.message.includes("Invalid login")) {
+          throw new Error("Invalid email or password. Please try again.");
+        }
+        if (error.message.includes("Email not confirmed")) {
+          throw new Error("Please confirm your email first. Check your inbox for the confirmation link.");
+        }
+        throw error;
+      }
+
       return data.user;
     } else {
       const saved = localStorage.getItem("d8_user");

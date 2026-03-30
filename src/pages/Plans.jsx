@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSubscription, PLANS } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isStripeConfigured, redirectToSubscription } from "../lib/stripe.js";
+import { notifySubscription } from "../lib/notifications.js";
 import SEO from "../components/SEO.jsx";
 
 export default function Plans() {
@@ -24,6 +25,8 @@ export default function Plans() {
 
     // Fallback: demo mode (no payment)
     subscribe(planId);
+    const plan = PLANS.find((p) => p.id === planId);
+    notifySubscription(user.name || user.email, user.email, plan?.name || planId, plan?.price || 0);
     navigate("/weekly");
   };
 
@@ -33,6 +36,8 @@ export default function Plans() {
     const subscribedPlan = params.get("subscribed");
     if (subscribedPlan && !activePlan) {
       subscribe(subscribedPlan);
+      const plan = PLANS.find((p) => p.id === subscribedPlan);
+      notifySubscription(user?.name || user?.email || "", user?.email || "", plan?.name || subscribedPlan, plan?.price || 0);
       window.history.replaceState({}, "", "/weekly");
       navigate("/weekly");
       return null;

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { isSupabaseConfigured } from "../lib/supabase.js";
 import SEO from "../components/SEO.jsx";
 
 export default function Auth() {
@@ -88,13 +87,6 @@ export default function Auth() {
             : "Join Dish8 — every user needs an account to order"}
         </p>
 
-        {!isSupabaseConfigured() && (
-          <div className="auth-error" role="alert">
-            Supabase not connected — using offline mode. Accounts will not persist.
-            (VITE_SUPABASE_URL: {import.meta.env.VITE_SUPABASE_URL ? "set" : "MISSING"},
-             ANON_KEY: {import.meta.env.VITE_SUPABASE_ANON_KEY?.slice(0, 5) || "MISSING"})
-          </div>
-        )}
         {success && <div className="auth-success" role="status">{success}</div>}
         {error && <div className="auth-error" role="alert">{error}</div>}
 
