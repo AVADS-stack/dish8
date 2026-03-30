@@ -16,6 +16,7 @@ interface OrderItem {
 }
 
 interface OrderRequest {
+  orderId: string | null;
   userEmail: string;
   userName: string;
   planName: string;
@@ -175,7 +176,74 @@ serve(async (req) => {
     </html>
     `;
 
-    // Send email via Zoho SMTP
+    // Build admin notification email
+    const adminEmail = Deno.env.get("ADMIN_EMAIL") || senderEmail;
+    const orderId = order.orderId || "N/A";
+
+    const adminHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0;padding:0;background:#141414;font-family:Arial,Helvetica,sans-serif;">
+      <div style="max-width:640px;margin:0 auto;background:#1c1c1c;border-radius:12px;overflow:hidden;">
+        <div style="background:#e87c03;padding:24px;text-align:center;">
+          <h1 style="margin:0;color:#fff;font-size:24px;font-weight:900;">NEW ORDER RECEIVED</h1>
+        </div>
+        <div style="padding:32px 24px;">
+          <h2 style="color:#fff;margin:0 0 16px;">Order #${orderId.slice(0, 8)}</h2>
+
+          <div style="background:#222;border-radius:8px;padding:16px;margin-bottom:16px;">
+            <table style="width:100%;font-size:14px;">
+              <tr><td style="padding:4px 0;color:#999;">Customer</td><td style="padding:4px 0;color:#fff;text-align:right;">${order.userName}</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Email</td><td style="padding:4px 0;color:#fff;text-align:right;">${order.userEmail}</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Plan</td><td style="padding:4px 0;color:#fff;text-align:right;">${order.planName}</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Meals</td><td style="padding:4px 0;color:#fff;text-align:right;">${order.totalMeals}</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Meal Total</td><td style="padding:4px 0;color:#fff;text-align:right;">$${order.mealSubtotal.toFixed(2)}</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Subscription</td><td style="padding:4px 0;color:#e50914;text-align:right;">$${order.subscriptionPrice.toFixed(2)}/mo</td></tr>
+              <tr><td style="padding:4px 0;color:#999;">Tax</td><td style="padding:4px 0;color:#fff;text-align:right;">$${order.tax.toFixed(2)}</td></tr>
+              <tr><td style="padding:8px 0 0;color:#fff;font-weight:700;border-top:1px solid #444;">Total</td><td style="padding:8px 0 0;color:#46d369;font-weight:700;text-align:right;border-top:1px solid #444;">$${order.total.toFixed(2)}</td></tr>
+            </table>
+          </div>
+
+          ${order.deliveryAddress ? `
+          <div style="background:#222;border-radius:8px;padding:16px;margin-bottom:16px;">
+            <h3 style="color:#fff;margin:0 0 8px;font-size:14px;">Delivery Address</h3>
+            <p style="color:#ccc;margin:0;font-size:14px;">${order.deliveryAddress}</p>
+          </div>
+          ` : ""}
+
+          <h3 style="color:#fff;margin:16px 0 8px;font-size:14px;">Meal Details</h3>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:#292929;">
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">Day</th>
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">Meal</th>
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">App 1</th>
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">App 2</th>
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">Main</th>
+                  <th style="padding:6px 8px;text-align:left;color:#e87c03;">Side</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${mealRows}
+              </tbody>
+            </table>
+          </div>
+
+          <div style="text-align:center;margin-top:24px;">
+            <a href="https://supabase.com/dashboard/project/zwwyabnphogaczpgaauh/editor"
+               style="display:inline-block;background:#e50914;color:#fff;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">
+              View in Supabase Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+
+    // Send emails via Zoho SMTP
     const client = new SMTPClient({
       connection: {
         hostname: smtpHost,
@@ -188,12 +256,22 @@ serve(async (req) => {
       },
     });
 
+    // 1. Send customer confirmation
     await client.send({
       from: `${senderName} <${senderEmail}>`,
       to: order.userEmail,
       subject: `Dish8 — Order Confirmed (${order.totalMeals} meals)`,
       content: "Your Dish8 order has been confirmed.",
       html: emailHtml,
+    });
+
+    // 2. Send admin notification
+    await client.send({
+      from: `${senderName} <${senderEmail}>`,
+      to: adminEmail,
+      subject: `[Dish8 Admin] New Order — ${order.userName} (${order.totalMeals} meals, $${order.total.toFixed(2)})`,
+      content: `New order from ${order.userName} (${order.userEmail}): ${order.totalMeals} meals, $${order.total.toFixed(2)}`,
+      html: adminHtml,
     });
 
     await client.close();

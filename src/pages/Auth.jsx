@@ -47,7 +47,7 @@ export default function Auth() {
           setSubmitting(false);
           return;
         }
-        navigate("/plans");
+        navigate("/");
       } else {
         if (!form.email || !form.password) {
           setError("Email and password are required.");

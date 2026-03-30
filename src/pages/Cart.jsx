@@ -4,6 +4,7 @@ import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isStripeConfigured, redirectToMealPayment } from "../lib/stripe.js";
 import { sendOrderConfirmation } from "../lib/email.js";
+import { saveOrder } from "../lib/orders.js";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import { useState } from "react";
 
@@ -68,33 +69,52 @@ export default function Cart() {
   const placeOrderAndNotify = async () => {
     // Build order items from cart before clearing
     const items = [];
+    const cartData = getCartByDay();
     DAYS.forEach((day) => {
       ["lunch", "dinner"].forEach((mealTime) => {
         if (isMealComplete(day, mealTime)) {
-          const meal = getCartByDay()[day]?.[mealTime];
+          const meal = cartData[day]?.[mealTime];
           if (meal) {
             items.push({
               day,
               mealTime,
               appetizer1: meal.appetizer1?.name || "",
+              appetizer1Cuisine: meal.appetizer1?.cuisineId || "",
               appetizer2: meal.appetizer2?.name || "",
+              appetizer2Cuisine: meal.appetizer2?.cuisineId || "",
               main: meal.main?.name || "",
+              mainCuisine: meal.main?.cuisineId || "",
               side: meal.side?.name || "",
+              sideCuisine: meal.side?.cuisineId || "",
             });
           }
         }
       });
     });
 
-    setOrderPlaced(true);
-    clearCart();
-
     const fullAddress = unitNumber.trim()
       ? `${deliveryAddress}, ${unitNumber.trim()}`
       : deliveryAddress;
 
-    // Send confirmation email (async, don't block)
+    // Save order to Supabase database
+    const orderId = await saveOrder({
+      userId: user.id,
+      subscriptionPlanId: activePlan?.id || null,
+      deliveryAddress: fullAddress,
+      items,
+      totalMeals: summary.totalMeals,
+      mealSubtotal,
+      subscriptionPrice,
+      tax: parseFloat(tax),
+      total: parseFloat(total),
+    });
+
+    setOrderPlaced(true);
+    clearCart();
+
+    // Send confirmation email to customer AND admin
     sendOrderConfirmation({
+      orderId,
       userEmail: user.email,
       userName: user.name || "Customer",
       planName: activePlan?.name || "No Plan",
