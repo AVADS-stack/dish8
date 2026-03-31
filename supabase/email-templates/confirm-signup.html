@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+</head>
+<body style="margin:0;padding:0;background:#0f0f0f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0f0f0f;">
+    <tr>
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #2a2a2a;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#e50914;padding:32px 24px;text-align:center;">
+              <h1 style="margin:0;color:#fff;font-size:32px;font-weight:900;letter-spacing:-0.5px;">DISH<span style="font-size:38px;">8</span></h1>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,0.9);font-size:15px;">Confirm Your Email</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 28px;">
+              <h2 style="margin:0 0 12px;color:#fff;font-size:22px;font-weight:700;">Almost there!</h2>
+              <p style="margin:0 0 16px;color:#e5e5e5;font-size:15px;line-height:1.65;">
+                Thanks for signing up for Dish8! Click the button below to verify your email address and activate your account.
+              </p>
+
+              <!-- CTA Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;background:#e50914;color:#fff;padding:14px 40px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;">
+                      Confirm Email Address
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <hr style="border:none;border-top:1px solid #2a2a2a;margin:20px 0;">
+
+              <p style="margin:0;color:#888;font-size:12px;line-height:1.5;">
+                If you didn't create a Dish8 account, you can safely ignore this email. This link expires in 24 hours.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:16px 24px;border-top:1px solid #2a2a2a;text-align:center;">
+              <p style="margin:0;font-size:11px;color:#888;">
+                &copy; {{ .Year }} Dish8 LLC. All Rights Reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

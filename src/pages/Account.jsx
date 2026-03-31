@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { getOrderHistory } from "../lib/orders.js";
+import { notifySubscriptionCancelled } from "../lib/notifications.js";
 import SEO from "../components/SEO.jsx";
 
 export default function Account() {
@@ -230,7 +231,10 @@ export default function Account() {
               </div>
               <div className="sub-actions">
                 <Link to="/plans" className="btn btn-outline btn-sm">Change Plan</Link>
-                <button type="button" className="btn btn-danger btn-sm" onClick={cancelSubscription}>
+                <button type="button" className="btn btn-danger btn-sm" onClick={() => {
+                  notifySubscriptionCancelled(user.name || user.email, user.email, activePlan?.name || "");
+                  cancelSubscription();
+                }}>
                   Cancel Subscription
                 </button>
               </div>

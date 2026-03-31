@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isStripeConfigured, redirectToMealPayment } from "../lib/stripe.js";
-import { sendOrderConfirmation } from "../lib/email.js";
+import { notifyOrderPlaced } from "../lib/notifications.js";
 import { saveOrder } from "../lib/orders.js";
 import AddressAutocomplete from "../components/AddressAutocomplete.jsx";
 import { useState } from "react";
@@ -113,7 +113,7 @@ export default function Cart() {
     clearCart();
 
     // Send confirmation email to customer AND admin
-    sendOrderConfirmation({
+    notifyOrderPlaced({
       orderId,
       userEmail: user.email,
       userName: user.name || "Customer",
