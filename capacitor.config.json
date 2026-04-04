@@ -3,25 +3,30 @@
   "appName": "Dish8",
   "webDir": "dist",
   "server": {
-    "url": "https://www.dish8.com",
+    "url": "https://dish8.com",
     "cleartext": false
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 2000,
+      "launchShowDuration": 2500,
+      "launchAutoHide": true,
       "backgroundColor": "#141414",
       "showSpinner": false,
       "androidScaleType": "CENTER_CROP",
       "splashFullScreen": true,
-      "splashImmersive": true
+      "splashImmersive": true,
+      "layoutName": "launch_screen",
+      "useDialog": false
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#141414"
+      "backgroundColor": "#141414",
+      "overlaysWebView": false
     },
     "Keyboard": {
       "resize": "body",
-      "resizeOnFullScreen": true
+      "resizeOnFullScreen": true,
+      "style": "DARK"
     },
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
@@ -29,10 +34,15 @@
   },
   "ios": {
     "scheme": "Dish8",
-    "contentInset": "always"
+    "contentInset": "always",
+    "backgroundColor": "#141414",
+    "preferredContentMode": "mobile",
+    "scrollEnabled": true
   },
   "android": {
     "backgroundColor": "#141414",
-    "allowMixedContent": false
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
   }
 }

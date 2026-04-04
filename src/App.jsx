@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import MobileTabBar from "./components/MobileTabBar.jsx";
 import Home from "./pages/Home.jsx";
 import CuisineDishes from "./pages/CuisineDishes.jsx";
 import Plans from "./pages/Plans.jsx";
@@ -15,10 +16,11 @@ import Investors from "./pages/Investors.jsx";
 import Partners from "./pages/Partners.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import { isNative } from "./lib/native.js";
 
 export default function App() {
   return (
-    <div className="app">
+    <div className={`app ${isNative ? "native-app" : ""}`}>
       <ScrollToTop />
       <Navbar />
       <main className="main-content">
@@ -39,6 +41,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 }

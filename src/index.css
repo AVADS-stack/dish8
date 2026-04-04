@@ -2923,34 +2923,239 @@ button {
   }
 }
 
-/* ── Native App (Capacitor) ──────────────────────────────────── */
-/* Safe areas for iPhone notch / Android cutout */
-.main-content {
-  padding-top: calc(70px + env(safe-area-inset-top, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+/* ============================================================
+   MOBILE TAB BAR — Netflix-style bottom navigation
+   ============================================================ */
+.mobile-tab-bar {
+  display: none;
 }
 
+@media (max-width: 768px) {
+  .mobile-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px));
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 12px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-icon {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tab-badge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .tab-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #888;
+    transition: color 0.15s ease;
+  }
+
+  .tab-item.active .tab-label {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Adjust content for tab bar */
+  .main-content {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Hide footer on mobile — tab bar replaces it */
+  .footer {
+    display: none;
+  }
+
+  /* Move meal summary bar above tab bar */
+  .meal-summary-bar {
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ============================================================
+   NATIVE APP (Capacitor) — iOS/Android enhancements
+   ============================================================ */
+
+/* Safe areas for iPhone notch / Android cutout */
 .navbar {
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-.meal-summary-bar {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+/* Native-only: tighter navbar, no search on very small screens */
+.native-app .navbar-inner {
+  height: 56px;
 }
 
-.footer {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-/* Keyboard open — hide footer, adjust layout */
+/* Keyboard open — hide tab bar and footer */
+body.keyboard-open .mobile-tab-bar,
 body.keyboard-open .footer,
 body.keyboard-open .meal-summary-bar {
-  display: none;
+  display: none !important;
 }
 
 /* Prevent overscroll bounce on iOS */
 html {
   overscroll-behavior: none;
+}
+
+/* Smooth scrolling for native feel */
+.native-app * {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove tap highlight on native */
+.native-app a,
+.native-app button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Page transition animation */
+.main-content {
+  animation: pageIn 0.2s ease-out;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0.85;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Active state for touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .cuisine-card:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+
+  .dish-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+
+  .tab-item:active {
+    transform: scale(0.9);
+  }
+
+  .day-tab:active,
+  .meal-tab:active,
+  .filter-btn:active,
+  .cuisine-pill:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ── Mobile-optimized hero ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 60vh;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+  }
+
+  /* Stack hero buttons vertically */
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Wider cuisine cards for thumb reach */
+  .genre-slider {
+    padding: 0.5rem 0 0.75rem;
+    scroll-padding: 0 16px;
+  }
+
+  /* Full-bleed sections */
+  .browse-section,
+  .how-it-works {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Bigger touch targets */
+  .btn {
+    min-height: 44px;
+  }
+
+  .day-tab,
+  .meal-tab,
+  .filter-btn {
+    min-height: 40px;
+  }
+
+  /* Hide navbar search on mobile — use browse instead */
+  .search-bar {
+    display: none;
+  }
+
+  /* Compact dashboard stats */
+  .dash-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 1rem 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
 }
 
 /* ── 404 / Error Page ───────────────────────────────────────── */

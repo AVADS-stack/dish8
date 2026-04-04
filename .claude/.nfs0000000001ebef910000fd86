@@ -38,9 +38,7 @@
       "Bash(git push:*)",
       "Bash(npx supabase:*)",
       "Bash(npx cap:*)",
-      "Bash(npm run:*)",
-      "Bash(rm -rf /storage2/aveerappa/website/ios/App/App/Assets.xcassets/AppIcon.appiconset/*)",
-      "Bash(cp /storage2/aveerappa/website/ios-icons/* /storage2/aveerappa/website/ios/App/App/Assets.xcassets/AppIcon.appiconset/)"
+      "Bash(npm run:*)"
     ]
   }
 }
