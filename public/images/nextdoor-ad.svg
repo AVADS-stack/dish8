@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="#141414"/>
+
+  <!-- Top accent bar -->
+  <rect width="1200" height="8" fill="#e50914"/>
+
+  <!-- Logo area -->
+  <text x="600" y="160" font-family="Arial,Helvetica,sans-serif" font-size="96" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="-2">
+    DISH<tspan fill="#e50914" font-size="110">8</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="600" y="220" font-family="Arial,Helvetica,sans-serif" font-size="28" fill="#888888" text-anchor="middle" font-weight="400">
+    Your Meal, Your Way
+  </text>
+
+  <!-- Divider -->
+  <line x1="450" y1="260" x2="750" y2="260" stroke="#333333" stroke-width="2"/>
+
+  <!-- Main headline -->
+  <text x="600" y="340" font-family="Arial,Helvetica,sans-serif" font-size="52" font-weight="800" fill="#ffffff" text-anchor="middle">
+    21 World Cuisines
+  </text>
+  <text x="600" y="405" font-family="Arial,Helvetica,sans-serif" font-size="52" font-weight="800" fill="#ffffff" text-anchor="middle">
+    Delivered to Your Door
+  </text>
+
+  <!-- Cuisine icons row -->
+  <rect x="80" y="460" width="155" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="157" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">Italian</text>
+
+  <rect x="255" y="460" width="155" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="332" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">Japanese</text>
+
+  <rect x="430" y="460" width="155" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="507" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">Mexican</text>
+
+  <rect x="605" y="460" width="155" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="682" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">Indian</text>
+
+  <rect x="780" y="460" width="155" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="857" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">American</text>
+
+  <rect x="955" y="460" width="165" height="80" rx="10" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="1037" y="510" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#e5e5e5" text-anchor="middle" font-weight="600">+ 16 More</text>
+
+  <!-- Stats section -->
+  <rect x="100" y="600" width="300" height="160" rx="16" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="250" y="670" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="900" fill="#e50914" text-anchor="middle">800+</text>
+  <text x="250" y="720" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#888" text-anchor="middle">Dishes</text>
+
+  <rect x="450" y="600" width="300" height="160" rx="16" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="600" y="670" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="900" fill="#46d369" text-anchor="middle">$9.99</text>
+  <text x="600" y="720" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#888" text-anchor="middle">Per Meal</text>
+
+  <rect x="800" y="600" width="300" height="160" rx="16" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1"/>
+  <text x="950" y="670" font-family="Arial,Helvetica,sans-serif" font-size="56" font-weight="900" fill="#4facfe" text-anchor="middle">FREE</text>
+  <text x="950" y="720" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#888" text-anchor="middle">Delivery</text>
+
+  <!-- Meal breakdown -->
+  <text x="600" y="850" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#e5e5e5" text-anchor="middle" font-weight="600">
+    Every meal: 2 Appetizers + 1 Main + 1 Side
+  </text>
+
+  <!-- CTA Button -->
+  <rect x="350" y="910" width="500" height="80" rx="12" fill="#e50914"/>
+  <text x="600" y="962" font-family="Arial,Helvetica,sans-serif" font-size="32" fill="#ffffff" text-anchor="middle" font-weight="800">
+    Plans from $99.99/mo
+  </text>
+
+  <!-- URL -->
+  <text x="600" y="1060" font-family="Arial,Helvetica,sans-serif" font-size="36" fill="#ffffff" text-anchor="middle" font-weight="700">
+    dish8.com
+  </text>
+
+  <!-- Bottom tagline -->
+  <text x="600" y="1120" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+    Dish8 LLC — Midwest, USA
+  </text>
+
+  <!-- Bottom accent bar -->
+  <rect y="1192" width="1200" height="8" fill="#e50914"/>
+</svg>
