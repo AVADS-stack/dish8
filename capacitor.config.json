@@ -3,8 +3,16 @@
   "appName": "Dish8",
   "webDir": "dist",
   "server": {
-    "url": "https://dish8.com",
-    "cleartext": false
+    "url": "https://dish8.vercel.app",
+    "cleartext": false,
+    "allowNavigation": [
+      "dish8.com",
+      "*.dish8.com",
+      "dish8.vercel.app",
+      "*.supabase.co",
+      "*.stripe.com",
+      "buy.stripe.com"
+    ]
   },
   "plugins": {
     "SplashScreen": {
@@ -14,9 +22,7 @@
       "showSpinner": false,
       "androidScaleType": "CENTER_CROP",
       "splashFullScreen": true,
-      "splashImmersive": true,
-      "layoutName": "launch_screen",
-      "useDialog": false
+      "splashImmersive": true
     },
     "StatusBar": {
       "style": "DARK",
@@ -37,7 +43,8 @@
     "contentInset": "always",
     "backgroundColor": "#141414",
     "preferredContentMode": "mobile",
-    "scrollEnabled": true
+    "scrollEnabled": true,
+    "allowsLinkPreview": false
   },
   "android": {
     "backgroundColor": "#141414",
