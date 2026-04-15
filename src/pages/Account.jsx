@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
 import { getOrderHistory } from "../lib/orders.js";
 import { notifySubscriptionCancelled } from "../lib/notifications.js";
+import { supabase, isSupabaseConfigured } from "../lib/supabase.js";
 import SEO from "../components/SEO.jsx";
 
 export default function Account() {
@@ -282,8 +283,8 @@ export default function Account() {
             </div>
           </div>
 
-          <div className="settings-section settings-danger">
-            <h3>Account</h3>
+          <div className="settings-section">
+            <h3>Session</h3>
             <button
               type="button"
               className="btn btn-outline btn-block"
@@ -292,9 +293,141 @@ export default function Account() {
               Sign Out
             </button>
           </div>
+
+          <DeleteAccountSection user={user} logout={logout} navigate={navigate} />
         </div>
       )}
     </div>
+  );
+}
+
+function DeleteAccountSection({ user, logout, navigate }) {
+  const [step, setStep] = useState("idle"); // idle → confirm → deleting → done
+  const [error, setError] = useState("");
+
+  const handleDelete = async () => {
+    setStep("deleting");
+    setError("");
+
+    try {
+      if (isSupabaseConfigured()) {
+        const { error: fnError } = await supabase.functions.invoke("delete-account");
+        if (fnError) throw fnError;
+      }
+
+      // Clear local data
+      localStorage.removeItem("d8_user");
+      localStorage.removeItem("d8_cart");
+      localStorage.removeItem("d8_subscription");
+
+      setStep("done");
+
+      // Sign out and redirect after brief delay
+      setTimeout(() => {
+        logout();
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      setError(err.message || "Failed to delete account. Please try again or contact accounts@dish8.com");
+      setStep("confirm");
+    }
+  };
+
+  if (step === "done") {
+    return (
+      <div className="settings-section settings-danger">
+        <h3>Account Deleted</h3>
+        <p className="delete-success">
+          Your account and all associated data have been permanently deleted. You will be redirected shortly.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="settings-section settings-danger">
+      <h3>Delete Account</h3>
+
+      {step === "idle" && (
+        <>
+          <p className="delete-warning-text">
+            Permanently delete your account and all associated data including order history,
+            subscription, and personal information. This action cannot be undone.
+          </p>
+          <button
+            type="button"
+            className="btn btn-danger btn-block"
+            onClick={() => setStep("confirm")}
+          >
+            Delete My Account
+          </button>
+        </>
+      )}
+
+      {step === "confirm" && (
+        <div className="delete-confirm">
+          {error && <p className="delete-error">{error}</p>}
+          <p className="delete-confirm-text">
+            Are you sure you want to permanently delete your account? This will remove:
+          </p>
+          <ul className="delete-list">
+            <li>Your profile and personal information</li>
+            <li>All order history</li>
+            <li>Active subscription (no refund for remaining period)</li>
+            <li>All saved preferences and data</li>
+          </ul>
+          <p className="delete-confirm-text">
+            <strong>This cannot be undone.</strong> Type your email to confirm:
+          </p>
+          <DeleteConfirmInput
+            userEmail={user.email}
+            onConfirm={handleDelete}
+            onCancel={() => { setStep("idle"); setError(""); }}
+          />
+        </div>
+      )}
+
+      {step === "deleting" && (
+        <div className="delete-progress">
+          <p>Deleting your account and all data... Please wait.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DeleteConfirmInput({ userEmail, onConfirm, onCancel }) {
+  const [typed, setTyped] = useState("");
+  const matches = typed.toLowerCase() === userEmail.toLowerCase();
+
+  return (
+    <>
+      <input
+        type="email"
+        placeholder={userEmail}
+        value={typed}
+        onChange={(e) => setTyped(e.target.value)}
+        className="delete-email-input"
+        autoComplete="off"
+      />
+      <div className="delete-actions">
+        <button
+          type="button"
+          className="btn btn-outline btn-sm"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger btn-sm"
+          disabled={!matches}
+          onClick={onConfirm}
+        >
+          Permanently Delete Account
+        </button>
+      </div>
+    </>
   );
 }
 

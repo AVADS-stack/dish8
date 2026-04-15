@@ -2440,6 +2440,73 @@ button {
   border-color: rgba(229, 9, 20, 0.15);
 }
 
+.delete-warning-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.delete-confirm-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.delete-list {
+  list-style: disc;
+  margin: 0 0 1rem 1.25rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.delete-error {
+  background: rgba(176, 0, 32, 0.15);
+  border: 1px solid #b00020;
+  border-radius: var(--radius);
+  padding: 0.625rem;
+  font-size: 0.82rem;
+  color: #ff6b6b;
+  margin-bottom: 0.75rem;
+}
+
+.delete-success {
+  color: var(--green);
+  font-size: 0.9rem;
+}
+
+.delete-email-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(229, 9, 20, 0.3);
+  background: var(--bg-elevated);
+  color: var(--text-bright);
+  font-size: 0.9rem;
+  font-family: var(--font);
+  margin-bottom: 0.75rem;
+}
+
+.delete-email-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.delete-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.delete-progress {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .dash-stats {
     grid-template-columns: repeat(2, 1fr);

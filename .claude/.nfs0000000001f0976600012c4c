@@ -40,12 +40,7 @@
       "Bash(npx cap:*)",
       "Bash(npm run:*)",
       "Bash(rm -rf /storage2/aveerappa/website/ios/App/App/Assets.xcassets/AppIcon.appiconset/*)",
-      "Bash(cp /storage2/aveerappa/website/ios-icons/* /storage2/aveerappa/website/ios/App/App/Assets.xcassets/AppIcon.appiconset/)",
-      "Bash(java -version)",
-      "Bash(sudo apt-get:*)",
-      "Read(//home/aveerappa/**)",
-      "Bash(tar xzf:*)",
-      "Bash(ls jdk-17.0.2/bin/java)"
+      "Bash(cp /storage2/aveerappa/website/ios-icons/* /storage2/aveerappa/website/ios/App/App/Assets.xcassets/AppIcon.appiconset/)"
     ]
   }
 }
