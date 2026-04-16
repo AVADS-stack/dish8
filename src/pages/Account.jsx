@@ -311,17 +311,26 @@ function DeleteAccountSection({ user, logout, navigate }) {
 
     try {
       if (isSupabaseConfigured()) {
-        // Get the user's session token to send with the request
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) throw new Error("Not signed in");
 
-        const { data, error: fnError } = await supabase.functions.invoke("delete-account", {
+        // Call edge function directly with fetch + timeout
+        const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`;
+        const res = await fetch(url, {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             Authorization: `Bearer ${session.access_token}`,
           },
+          body: JSON.stringify({}),
+          signal: AbortSignal.timeout(30000),
         });
-        if (fnError) throw fnError;
-        if (data?.error) throw new Error(data.error);
+
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          throw new Error(data.error || `Request failed with status ${res.status}`);
+        }
       }
 
       // Clear local data

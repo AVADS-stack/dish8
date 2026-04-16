@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,9 +15,8 @@ serve(async (req) => {
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Get the user's JWT from the Authorization header
     const authHeader = req.headers.get("Authorization") || "";
-    const token = authHeader.replace("Bearer ", "");
+    const token = authHeader.replace("Bearer ", "").trim();
 
     if (!token) {
       return new Response(
@@ -27,61 +25,99 @@ serve(async (req) => {
       );
     }
 
-    // Verify the user with their token
-    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
+    // 1. Verify user by calling auth/v1/user with their token
+    const userRes = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: supabaseAnonKey,
+      },
     });
 
-    const { data: { user }, error: userError } = await supabaseUser.auth.getUser(token);
-    if (userError || !user) {
+    if (!userRes.ok) {
+      const errText = await userRes.text();
       return new Response(
-        JSON.stringify({ error: "Unable to authenticate: " + (userError?.message || "no user") }),
+        JSON.stringify({ error: "Authentication failed: " + errText }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    const user = await userRes.json();
     const userId = user.id;
 
-    // Use admin client (service role) to delete everything
-    const admin = createClient(supabaseUrl, supabaseServiceKey);
-
-    // 1. Get order IDs for this user
-    const { data: orders } = await admin
-      .from("orders")
-      .select("id")
-      .eq("user_id", userId);
-
-    // 2. Delete order items if any orders exist
-    if (orders && orders.length > 0) {
-      const orderIds = orders.map((o: any) => o.id);
-      await admin.from("order_items").delete().in("order_id", orderIds);
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "No user ID in token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    // 3. Delete orders
-    await admin.from("orders").delete().eq("user_id", userId);
+    const adminHeaders = {
+      apikey: supabaseServiceKey,
+      Authorization: `Bearer ${supabaseServiceKey}`,
+      "Content-Type": "application/json",
+    };
 
-    // 4. Delete subscriptions
-    await admin.from("subscriptions").delete().eq("user_id", userId);
+    // 2. Get user's order IDs
+    const ordersRes = await fetch(
+      `${supabaseUrl}/rest/v1/orders?user_id=eq.${userId}&select=id`,
+      { headers: adminHeaders }
+    );
+    const orders = ordersRes.ok ? await ordersRes.json() : [];
 
-    // 5. Delete profile
-    await admin.from("profiles").delete().eq("id", userId);
+    // 3. Delete order_items for those orders
+    if (orders.length > 0) {
+      const orderIds = orders.map((o: any) => o.id).join(",");
+      await fetch(
+        `${supabaseUrl}/rest/v1/order_items?order_id=in.(${orderIds})`,
+        { method: "DELETE", headers: adminHeaders }
+      );
+    }
 
-    // 6. Delete the auth user
-    const { error: deleteError } = await admin.auth.admin.deleteUser(userId);
-    if (deleteError) {
+    // 4. Delete orders
+    await fetch(
+      `${supabaseUrl}/rest/v1/orders?user_id=eq.${userId}`,
+      { method: "DELETE", headers: adminHeaders }
+    );
+
+    // 5. Delete subscriptions
+    await fetch(
+      `${supabaseUrl}/rest/v1/subscriptions?user_id=eq.${userId}`,
+      { method: "DELETE", headers: adminHeaders }
+    );
+
+    // 6. Delete profile
+    await fetch(
+      `${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`,
+      { method: "DELETE", headers: adminHeaders }
+    );
+
+    // 7. Delete auth user via admin API
+    const deleteRes = await fetch(
+      `${supabaseUrl}/auth/v1/admin/users/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          apikey: supabaseServiceKey,
+          Authorization: `Bearer ${supabaseServiceKey}`,
+        },
+      }
+    );
+
+    if (!deleteRes.ok) {
+      const errText = await deleteRes.text();
       return new Response(
-        JSON.stringify({ error: "Failed to delete auth account: " + deleteError.message }),
+        JSON.stringify({ error: "Failed to delete auth user: " + errText }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, userId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message || "Unknown error" }),
+      JSON.stringify({ error: error.message || "Unknown error", stack: error.stack }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
