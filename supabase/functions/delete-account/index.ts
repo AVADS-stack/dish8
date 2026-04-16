@@ -12,50 +12,76 @@ serve(async (req) => {
   }
 
   try {
-    // Get the user's JWT from the Authorization header
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("Missing authorization header");
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Create a client with the user's JWT to get their ID
-    const supabaseUser = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+    // Get the user's JWT from the Authorization header
+    const authHeader = req.headers.get("Authorization") || "";
+    const token = authHeader.replace("Bearer ", "");
 
-    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
-    if (userError || !user) {
-      throw new Error("Unable to authenticate user");
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Not authenticated" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    // Create an admin client with service role key to delete the user
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+    // Verify the user with their token
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
 
-    // Delete user data from all tables (cascade should handle most, but be explicit)
-    await supabaseAdmin.from("order_items").delete().in(
-      "order_id",
-      (await supabaseAdmin.from("orders").select("id").eq("user_id", user.id)).data?.map((o: any) => o.id) || []
-    );
-    await supabaseAdmin.from("orders").delete().eq("user_id", user.id);
-    await supabaseAdmin.from("subscriptions").delete().eq("user_id", user.id);
-    await supabaseAdmin.from("profiles").delete().eq("id", user.id);
+    const { data: { user }, error: userError } = await supabaseUser.auth.getUser(token);
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Unable to authenticate: " + (userError?.message || "no user") }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    // Delete the auth user
-    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+    const userId = user.id;
+
+    // Use admin client (service role) to delete everything
+    const admin = createClient(supabaseUrl, supabaseServiceKey);
+
+    // 1. Get order IDs for this user
+    const { data: orders } = await admin
+      .from("orders")
+      .select("id")
+      .eq("user_id", userId);
+
+    // 2. Delete order items if any orders exist
+    if (orders && orders.length > 0) {
+      const orderIds = orders.map((o: any) => o.id);
+      await admin.from("order_items").delete().in("order_id", orderIds);
+    }
+
+    // 3. Delete orders
+    await admin.from("orders").delete().eq("user_id", userId);
+
+    // 4. Delete subscriptions
+    await admin.from("subscriptions").delete().eq("user_id", userId);
+
+    // 5. Delete profile
+    await admin.from("profiles").delete().eq("id", userId);
+
+    // 6. Delete the auth user
+    const { error: deleteError } = await admin.auth.admin.deleteUser(userId);
     if (deleteError) {
-      throw new Error("Failed to delete account: " + deleteError.message);
+      return new Response(
+        JSON.stringify({ error: "Failed to delete auth account: " + deleteError.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Account and all associated data have been permanently deleted." }),
+      JSON.stringify({ success: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error.message || "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

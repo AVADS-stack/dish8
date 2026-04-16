@@ -311,8 +311,17 @@ function DeleteAccountSection({ user, logout, navigate }) {
 
     try {
       if (isSupabaseConfigured()) {
-        const { error: fnError } = await supabase.functions.invoke("delete-account");
+        // Get the user's session token to send with the request
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error("Not signed in");
+
+        const { data, error: fnError } = await supabase.functions.invoke("delete-account", {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
         if (fnError) throw fnError;
+        if (data?.error) throw new Error(data.error);
       }
 
       // Clear local data
