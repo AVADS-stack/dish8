@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /account
+Disallow: /cart
+Disallow: /auth
 
-Sitemap: https://dish8.vercel.app/sitemap.xml
+Sitemap: https://dish8.com/sitemap.xml

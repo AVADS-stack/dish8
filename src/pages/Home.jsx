@@ -2,7 +2,7 @@ import { genreGroups } from "../data/cuisines.js";
 import GenreRow from "../components/GenreRow.jsx";
 import { Link } from "react-router-dom";
 import { useSubscription } from "../context/SubscriptionContext.jsx";
-import SEO, { organizationSchema, foodServiceSchema } from "../components/SEO.jsx";
+import SEO, { organizationSchema, foodServiceSchema, websiteSchema, mobileAppSchema } from "../components/SEO.jsx";
 
 export default function Home() {
   const { activePlan } = useSubscription();
@@ -11,8 +11,8 @@ export default function Home() {
     <div className="home-page">
       <SEO
         path="/"
-        description="Explore 21+ world cuisines. Pick your weekly meals — 2 appetizers, a main course, and a side — delivered fresh for just $9.99/meal."
-        jsonLd={[organizationSchema, foodServiceSchema]}
+        description="Dish8 delivers 21+ world cuisines to your door. Browse 800+ dishes, build weekly meals — 2 appetizers, a main course, and a side — for just $9.99/meal. Plans from $99.99/mo."
+        jsonLd={[organizationSchema, foodServiceSchema, websiteSchema, mobileAppSchema]}
       />
       {/* Hero */}
       <section className="hero">
